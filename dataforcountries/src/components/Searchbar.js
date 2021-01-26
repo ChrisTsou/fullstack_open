@@ -1,7 +1,10 @@
 import React from "react";
 
-const Searchbar = ({ searchText, setSearchText }) => {
-  const handleSearchChange = (event) => setSearchText(event.target.value);
+const Searchbar = ({ searchText, setSearchText, setShowSpecific }) => {
+  const handleSearchChange = (event) => {
+    setShowSpecific("");
+    setSearchText(event.target.value);
+  };
 
   return (
     <p>
