@@ -16,6 +16,12 @@ const App = () => {
     });
   }, []);
 
+  const handleDeletion = (personId) => {
+    personsSer.deletePerson(personId).then((returnedPerson) => {
+      setPersons(persons.filter((person) => person.id !== personId));
+    });
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -28,7 +34,11 @@ const App = () => {
         personsState={{ persons, setPersons }}
       />
       <h3>Numbers</h3>
-      <ListNumbers persons={persons} filterString={filterString} />
+      <ListNumbers
+        persons={persons}
+        filterString={filterString}
+        handleDeletion={handleDeletion}
+      />
     </div>
   );
 };
