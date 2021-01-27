@@ -16,10 +16,12 @@ const App = () => {
     });
   }, []);
 
-  const handleDeletion = (personId) => {
-    personsSer.deletePerson(personId).then((returnedPerson) => {
-      setPersons(persons.filter((person) => person.id !== personId));
-    });
+  const handleDeletion = (personToDelete) => {
+    if (window.confirm(`delete ${personToDelete.name} ?`)) {
+      personsSer.deletePerson(personToDelete.id).then((returnedPerson) => {
+        setPersons(persons.filter((person) => person.id !== personToDelete.id));
+      });
+    }
   };
 
   return (

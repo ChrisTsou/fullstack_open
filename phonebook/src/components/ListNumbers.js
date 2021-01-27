@@ -12,7 +12,7 @@ function ListNumbers({ persons, filterString, handleDeletion }) {
         .map((person) => (
           <div key={person.name} >
             <Number person={person} />
-            <button onClick={() => handleDeletion(person.id)}>delete entry</button>
+            <button onClick={() => handleDeletion(person)}>delete entry</button>
           </div>
         ))}
     </div>
