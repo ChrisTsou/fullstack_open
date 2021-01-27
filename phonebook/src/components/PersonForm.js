@@ -1,7 +1,12 @@
 import React from "react";
 import personsSer from "../services/personsSer";
 
-function PersonForm({ nameState, numberState, personsState }) {
+const PersonForm = ({
+  nameState,
+  numberState,
+  personsState,
+  notificationState,
+}) => {
   const handleNameChange = (event) => nameState.setNewName(event.target.value);
   const handleNumberChange = (event) =>
     numberState.setNewNumber(event.target.value);
@@ -9,12 +14,20 @@ function PersonForm({ nameState, numberState, personsState }) {
   const personExists = (personName) =>
     personsState.persons.some((p) => p.name === personName);
 
+  const displayNotification = (message) => {
+    notificationState.setNotificationMessage(message);
+    setTimeout(() => {
+      notificationState.setNotificationMessage(null);
+    }, 5000);
+  };
+
   const addPerson = (newPerson) => {
     personsSer
       .create(newPerson)
-      .then((returnedPerson) =>
-        personsState.setPersons(personsState.persons.concat(returnedPerson))
-      )
+      .then((returnedPerson) => {
+        personsState.setPersons(personsState.persons.concat(returnedPerson));
+        displayNotification(`Added ${returnedPerson.name}`)
+      })
       .catch((error) => window.alert(`${nameState.newName} cannot be added`));
   };
 
@@ -31,7 +44,8 @@ function PersonForm({ nameState, numberState, personsState }) {
             personsState.persons.map((person) =>
               person.id === returnedPerson.id ? returnedPerson : person
             )
-          );
+          )
+          displayNotification(`Updated ${returnedPerson.name}`)
         })
         .catch((error) => window.alert("person does not exist"));
     }
@@ -68,6 +82,6 @@ function PersonForm({ nameState, numberState, personsState }) {
       </form>
     </div>
   );
-}
+};
 
 export default PersonForm;
