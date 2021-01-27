@@ -14,8 +14,8 @@ const PersonForm = ({
   const personExists = (personName) =>
     personsState.persons.some((p) => p.name === personName);
 
-  const displayNotification = (message) => {
-    notificationState.setNotificationMessage(message);
+  const displayNotification = (message, isAlert) => {
+    notificationState.setNotificationMessage({message, isAlert});
     setTimeout(() => {
       notificationState.setNotificationMessage(null);
     }, 5000);
@@ -26,9 +26,11 @@ const PersonForm = ({
       .create(newPerson)
       .then((returnedPerson) => {
         personsState.setPersons(personsState.persons.concat(returnedPerson));
-        displayNotification(`Added ${returnedPerson.name}`)
+        displayNotification(`Added ${returnedPerson.name}`);
       })
-      .catch((error) => window.alert(`${nameState.newName} cannot be added`));
+      .catch((error) =>
+        window.alert(`${nameState.newName} cannot be added`, false)
+      );
   };
 
   const updatePersonNumber = (newPerson) => {
@@ -44,10 +46,18 @@ const PersonForm = ({
             personsState.persons.map((person) =>
               person.id === returnedPerson.id ? returnedPerson : person
             )
-          )
-          displayNotification(`Updated ${returnedPerson.name}`)
+          );
+          displayNotification(`Updated ${returnedPerson.name}`, false);
         })
-        .catch((error) => window.alert("person does not exist"));
+        .catch((error) => {
+          displayNotification(
+            `Information of ${oldPerson.name} has been already been removed from the server`,
+            true
+          );
+          personsState.setPersons(
+            personsState.persons.filter((p) => p.name !== oldPerson.name)
+          );
+        });
     }
   };
 

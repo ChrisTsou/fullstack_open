@@ -29,7 +29,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification notificationMessage={notificationMessage} />
       <h3>Filter</h3>
       <Filter filterString={filterString} setFilterString={setFilterString} />
       <h3>Add new</h3>
