@@ -6,7 +6,38 @@ function PersonForm({ nameState, numberState, personsState }) {
   const handleNumberChange = (event) =>
     numberState.setNewNumber(event.target.value);
 
-  const addPerson = (event) => {
+  const personExists = (personName) =>
+    personsState.persons.some((p) => p.name === personName);
+
+  const addPerson = (newPerson) => {
+    personsSer
+      .create(newPerson)
+      .then((returnedPerson) =>
+        personsState.setPersons(personsState.persons.concat(returnedPerson))
+      )
+      .catch((error) => window.alert(`${nameState.newName} cannot be added`));
+  };
+
+  const updatePersonNumber = (newPerson) => {
+    const oldPerson = personsState.persons.find(
+      (p) => p.name === newPerson.name
+    );
+
+    if (window.confirm(`update ${oldPerson.name} number?`)) {
+      personsSer
+        .updatePerson(oldPerson.id, { ...oldPerson, number: newPerson.number })
+        .then((returnedPerson) => {
+          personsState.setPersons(
+            personsState.persons.map((person) =>
+              person.id === returnedPerson.id ? returnedPerson : person
+            )
+          );
+        })
+        .catch((error) => window.alert("person does not exist"));
+    }
+  };
+
+  const handleAddPerson = (event) => {
     event.preventDefault();
 
     const newPerson = {
@@ -14,14 +45,9 @@ function PersonForm({ nameState, numberState, personsState }) {
       number: numberState.newNumber,
     };
 
-    personsSer
-      .create(newPerson)
-      .then((returnedPerson) =>
-        personsState.setPersons(personsState.persons.concat(returnedPerson))
-      )
-      .catch((error) =>
-        window.alert(`${nameState.newName} is already in the phonebook`)
-      );
+    personExists(newPerson.name)
+      ? updatePersonNumber(newPerson)
+      : addPerson(newPerson);
   };
 
   return (
@@ -35,7 +61,7 @@ function PersonForm({ nameState, numberState, personsState }) {
           <input onChange={handleNumberChange} value={numberState.newNumber} />
         </div>
         <div>
-          <button onClick={addPerson} type="submit">
+          <button onClick={handleAddPerson} type="submit">
             add
           </button>
         </div>
