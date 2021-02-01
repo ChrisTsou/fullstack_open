@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import ListNumbers from "./components/ListNumbers";
+import React, { useEffect, useState } from "react";
 import Filter from "./components/Filter";
+import ListNumbers from "./components/ListNumbers";
+import Notification from "./components/Notification";
 import PersonForm from "./components/PersonForm";
 import personsSer from "./services/personsSer";
-import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -20,7 +20,7 @@ const App = () => {
 
   const handleDeletion = (personToDelete) => {
     if (window.confirm(`delete ${personToDelete.name} ?`)) {
-      personsSer.deletePerson(personToDelete.id).then((returnedPerson) => {
+      personsSer.deletePerson(personToDelete.id).then(() => {
         setPersons(persons.filter((person) => person.id !== personToDelete.id));
       });
     }

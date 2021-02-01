@@ -15,7 +15,7 @@ const PersonForm = ({
     personsState.persons.some((p) => p.name === personName);
 
   const displayNotification = (message, isAlert) => {
-    notificationState.setNotificationMessage({message, isAlert});
+    notificationState.setNotificationMessage({ message, isAlert });
     setTimeout(() => {
       notificationState.setNotificationMessage(null);
     }, 5000);
@@ -28,9 +28,7 @@ const PersonForm = ({
         personsState.setPersons(personsState.persons.concat(returnedPerson));
         displayNotification(`Added ${returnedPerson.name}`);
       })
-      .catch((error) =>
-        window.alert(`${nameState.newName} cannot be added`, false)
-      );
+      .catch((error) => displayNotification(error.response.data.error, true));
   };
 
   const updatePersonNumber = (newPerson) => {
