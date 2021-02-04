@@ -5,13 +5,12 @@ const cors = require("cors");
 const app = express();
 const Person = require("./models/person");
 
-app.use(express.json());
 app.use(cors());
 app.use(express.static("build"));
+app.use(express.json());
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :data")
 );
-
 morgan.token("data", (req, res) => {
   return JSON.stringify(req.body);
 });
@@ -35,10 +34,12 @@ app.get("/api/people/:id", (request, response) => {
   response.json(person);
 });
 
-app.delete("/api/people/:id", (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter((p) => p.id !== id);
-  response.status(204).end();
+app.delete("/api/people/:id", (request, response, next) => {
+  Person.findByIdAndRemove(request.params.id)
+    .then((result) => {
+      response.send(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 app.post("/api/people", (request, response) => {
