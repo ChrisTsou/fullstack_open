@@ -1,11 +1,9 @@
 const { response } = require("express");
 const express = require("express");
 const morgan = require("morgan");
-const cors = require("cors");
 const app = express();
 const Person = require("./models/person");
 
-app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
 app.use(
@@ -70,17 +68,16 @@ app.post("/api/people", (request, response, next) => {
 app.put("/api/people/:id", (request, response, next) => {
   const body = request.body;
 
-  if (!body.number) {
-    return response.status(400).json({
-      error: "number missing",
-    });
-  }
   const person = {
     name: body.name,
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((updatedPerson) => {
       response.json(updatedPerson);
     })
