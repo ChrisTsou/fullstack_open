@@ -15,17 +15,23 @@ morgan.token("data", (req, res) => {
   return JSON.stringify(req.body);
 });
 
-app.get("/api/people", (request, response) => {
-  Person.find({}).then((result) => {
-    response.json(result);
-  });
+app.get("/api/people", (lequest, response, next) => {
+  Person.find({})
+    .then((result) => {
+      response.json(result);
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/info", (request, response) => {
-  response.send(`
+  response
+    .send(
+      `
     <p>Phonebook has info for ${persons.length} people</p>
     <p>${new Date()}</p>
-  `);
+  `
+    )
+    .catch((error) => next(error));
 });
 
 app.get("/api/people/:id", (request, response) => {
@@ -61,10 +67,31 @@ app.post("/api/people", (request, response) => {
     number: body.number,
   });
 
-  newPerson.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  newPerson
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
