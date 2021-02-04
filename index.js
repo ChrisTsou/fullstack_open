@@ -49,20 +49,20 @@ app.post("/api/people", (request, response) => {
     });
   }
 
-  if (persons.some((p) => p.name === body.name)) {
-    return response.status(400).json({
-      error: "name already exists",
-    });
-  }
+  // if (persons.some((p) => p.name === body.name)) {
+  //   return response.status(400).json({
+  //     error: "name already exists",
+  //   });
+  // }
 
-  const newPerson = {
+  const newPerson = new Person({
     name: body.name,
     number: body.number,
-    id: Math.floor(Math.random() * 1000000),
-  };
+  });
 
-  persons = persons.concat(newPerson);
-  response.json(newPerson);
+  newPerson.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 const PORT = process.env.PORT;
