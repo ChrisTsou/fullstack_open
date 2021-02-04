@@ -23,21 +23,23 @@ app.get("/api/people", (lequest, response, next) => {
     .catch((error) => next(error));
 });
 
-app.get("/info", (request, response) => {
-  response
-    .send(
-      `
-    <p>Phonebook has info for ${persons.length} people</p>
-    <p>${new Date()}</p>
-  `
-    )
+app.get("/info", (request, response, next) => {
+  Person.count({})
+    .then((result) => {
+      response.send(
+        `<p>Phonebook has info for ${result} people</p>
+         <p>${new Date()}</p>`
+      );
+    })
     .catch((error) => next(error));
 });
 
-app.get("/api/people/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((p) => p.id === id);
-  response.json(person);
+app.get("/api/people/:id", (request, response, next) => {
+  Person.findById(request.params.id)
+    .then((returnedPerson) => {
+      response.json(returnedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/api/people/:id", (request, response, next) => {
@@ -48,7 +50,7 @@ app.delete("/api/people/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.post("/api/people", (request, response) => {
+app.post("/api/people", (request, response, next) => {
   const body = request.body;
   if (!body.name || !body.number) {
     return response.status(400).json({
@@ -71,6 +73,26 @@ app.post("/api/people", (request, response) => {
     .save()
     .then((savedPerson) => {
       response.json(savedPerson);
+    })
+    .catch((error) => next(error));
+});
+
+app.put("/api/people/:id", (request, response, next) => {
+  const body = request.body;
+
+  if (!body.number) {
+    return response.status(400).json({
+      error: "number missing",
+    });
+  }
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then((updatedPerson) => {
+      response.json(updatedPerson);
     })
     .catch((error) => next(error));
 });
