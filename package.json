@@ -20,10 +20,6 @@
     "express": "^4.17.1",
     "mongoose": "^5.11.14",
     "mongoose-unique-validator": "^2.0.3",
-    "morgan": "^1.10.0",
-    "prettier": "^2.2.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
+    "morgan": "^1.10.0"
   }
 }
