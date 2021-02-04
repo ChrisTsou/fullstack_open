@@ -3,7 +3,7 @@ import Filter from "./components/Filter";
 import ListNumbers from "./components/ListNumbers";
 import Notification from "./components/Notification";
 import PersonForm from "./components/PersonForm";
-import personsSer from "./services/personsSer";
+import peopleService from "./services/peopleService";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -13,14 +13,14 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState(null);
 
   useEffect(() => {
-    personsSer.getAll().then((returnedPersons) => {
+    peopleService.getAll().then((returnedPersons) => {
       setPersons(returnedPersons);
     });
   }, []);
 
   const handleDeletion = (personToDelete) => {
     if (window.confirm(`delete ${personToDelete.name} ?`)) {
-      personsSer.deletePerson(personToDelete.id).then(() => {
+      peopleService.deletePerson(personToDelete.id).then(() => {
         setPersons(persons.filter((person) => person.id !== personToDelete.id));
       });
     }

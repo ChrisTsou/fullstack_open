@@ -1,5 +1,5 @@
 import React from "react";
-import personsSer from "../services/personsSer";
+import peopleService from "../services/peopleService";
 
 const PersonForm = ({
   nameState,
@@ -22,11 +22,11 @@ const PersonForm = ({
   };
 
   const addPerson = (newPerson) => {
-    personsSer
+    peopleService
       .create(newPerson)
-      .then((returnedPerson) => {
-        personsState.setPersons(personsState.persons.concat(returnedPerson));
-        displayNotification(`Added ${returnedPerson.name}`);
+      .then((createdPerson) => {
+        personsState.setPersons(personsState.persons.concat(createdPerson));
+        displayNotification(`Added ${createdPerson.name}`);
       })
       .catch((error) => displayNotification(error.response.data.error, true));
   };
@@ -37,7 +37,7 @@ const PersonForm = ({
     );
 
     if (window.confirm(`update ${oldPerson.name} number?`)) {
-      personsSer
+      peopleService
         .updatePerson(oldPerson.id, { ...oldPerson, number: newPerson.number })
         .then((returnedPerson) => {
           personsState.setPersons(
@@ -47,15 +47,7 @@ const PersonForm = ({
           );
           displayNotification(`Updated ${returnedPerson.name}`, false);
         })
-        .catch((error) => {
-          displayNotification(
-            `Information of ${oldPerson.name} has been already been removed from the server`,
-            true
-          );
-          personsState.setPersons(
-            personsState.persons.filter((p) => p.name !== oldPerson.name)
-          );
-        });
+        .catch((error) => displayNotification(error.response.data.error, true));
     }
   };
 
