@@ -3,6 +3,7 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 const Person = require("./models/person");
+// to deploy
 
 app.use(express.static("build"));
 app.use(express.json());
