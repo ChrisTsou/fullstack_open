@@ -5,6 +5,8 @@ const config = require("./utils/config")
 const logger = require("./utils/logger")
 const mongoose = require("mongoose")
 const blogRouter = require("./controllers/blog")
+const middleware = require("./utils/middleware")
+const morgan = require("morgan")
 
 logger.info("Connecting to", config.MONGODB_URI)
 
@@ -22,8 +24,11 @@ mongoose
 
 app.use(cors())
 app.use(express.json())
-// app.use(middleware.requestLogger)
+app.use(morgan("tiny"))
 
 app.use("/api/blogs", blogRouter)
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
 
 module.exports = app
