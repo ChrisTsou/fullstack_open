@@ -27,4 +27,22 @@ test("blogs have id property", async () => {
     })
 })
 
+test("blog is added properly with post", async () => {
+    const newBlog = new Blog(testHelper.blogToAdd)
+    await newBlog.save()
+
+    const response = await api.get("/api/blogs")
+
+    expect(response.body.length).toBe(testHelper.initialBlogs.length + 1)
+
+    const addedBlog = response.body.find(
+        (b) => b.title === testHelper.blogToAdd.title
+    )
+
+    expect(addedBlog).toBeDefined()
+    expect(addedBlog.author).toBe(testHelper.blogToAdd.author)
+    expect(addedBlog.url).toBe(testHelper.blogToAdd.url)
+    expect(addedBlog.likes).toBe(testHelper.blogToAdd.likes)
+})
+
 afterAll(() => mongoose.connection.close())
