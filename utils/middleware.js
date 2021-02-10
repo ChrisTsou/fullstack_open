@@ -1,4 +1,3 @@
-const { response } = require("express")
 const logger = require("./logger")
 
 const unknownEndpoint = (request, response) => {
@@ -10,7 +9,7 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === "CastError") {
         response.status(400).send({ error: "malformatted id" })
-    } else if (error.name === "Validation Error") {
+    } else if (error.name === "ValidationError") {
         response.status(400).send({ error: error.message })
     }
 

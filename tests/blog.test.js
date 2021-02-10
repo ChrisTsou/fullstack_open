@@ -62,4 +62,12 @@ test("added blog likes is 0 if not provided", async () => {
     expect(addedBlog.likes).toBe(0)
 })
 
+test("blogs without title or url are not added", async () => {
+    const { title, ...noTitleBlog } = testHelper.blogToAdd
+    const { url, ...noUrlBlog } = testHelper.blogToAdd
+
+    await api.post("/api/blogs").send(noTitleBlog).expect(400)
+    await api.post("/api/blogs").send(noUrlBlog).expect(400)
+})
+
 afterAll(() => mongoose.connection.close())
