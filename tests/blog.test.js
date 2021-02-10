@@ -45,4 +45,21 @@ test("blog is added properly with post", async () => {
     expect(addedBlog.likes).toBe(testHelper.blogToAdd.likes)
 })
 
+test("added blog likes is 0 if not provided", async () => {
+    const { likes, ...newBlog } = testHelper.blogToAdd
+
+    await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(201)
+        .expect("Content-Type", /application\/json/)
+
+    const response = await api.get("/api/blogs")
+    const addedBlog = response.body.find(
+        (b) => b.title === testHelper.blogToAdd.title
+    )
+
+    expect(addedBlog.likes).toBe(0)
+})
+
 afterAll(() => mongoose.connection.close())
