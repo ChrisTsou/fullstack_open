@@ -75,8 +75,8 @@ describe("adding a blog", () => {
     })
 })
 
-describe("deleting blog", () => {
-    test("blog is properly deleted", async () => {
+describe("deleting a blog", () => {
+    test("blog is properly deleted from database", async () => {
         const blogIdToDelete = testHelper.initialBlogs[0]._id
 
         await api.delete(`/api/blogs/${blogIdToDelete}`).expect(204)
@@ -86,6 +86,23 @@ describe("deleting blog", () => {
         expect(
             response.body.find((b) => b.id === blogIdToDelete)
         ).toBeUndefined()
+    })
+})
+
+describe("updating a blog", () => {
+    test("amount of likes in blog updated", async () => {
+        const blog = { ...testHelper.initialBlogs[0], likes: 10 }
+        const blogId = blog._id
+        delete blog._id
+        delete blog.__v
+
+        await api.put(`/api/blogs/${blogId}`).send(blog)
+
+        const response = await api.get("/api/blogs")
+        const updatedBlogLikes = response.body.find((b) => b.id === blogId)
+            .likes
+
+        expect(updatedBlogLikes).toBe(10)
     })
 })
 
