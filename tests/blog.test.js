@@ -3,6 +3,7 @@ const supertest = require("supertest")
 const Blog = require("../models/blog")
 const testHelper = require("./test_helper")
 const app = require("../app")
+const blog = require("../models/blog")
 const api = supertest(app)
 
 beforeEach(async () => {
@@ -13,61 +14,79 @@ beforeEach(async () => {
     await Promise.all(promiseArray)
 })
 
-test("right number of blogs are returned", async () => {
-    const response = await api.get("/api/blogs")
+describe("basic get tests", () => {
+    test("right number of blogs are returned", async () => {
+        const response = await api.get("/api/blogs")
 
-    expect(response.body.length).toBe(testHelper.initialBlogs.length)
-})
+        expect(response.body.length).toBe(testHelper.initialBlogs.length)
+    })
 
-test("blogs have id property", async () => {
-    const response = await api.get("/api/blogs")
+    test("blogs have id property", async () => {
+        const response = await api.get("/api/blogs")
 
-    response.body.forEach((blog) => {
-        expect(blog.id).toBeDefined()
+        response.body.forEach((blog) => {
+            expect(blog.id).toBeDefined()
+        })
     })
 })
 
-test("blog is added properly with post", async () => {
-    const newBlog = new Blog(testHelper.blogToAdd)
-    await newBlog.save()
+describe("adding a blog", () => {
+    test("blog is added properly with post", async () => {
+        const newBlog = new Blog(testHelper.blogToAdd)
+        await newBlog.save()
 
-    const response = await api.get("/api/blogs")
+        const response = await api.get("/api/blogs")
 
-    expect(response.body.length).toBe(testHelper.initialBlogs.length + 1)
+        expect(response.body.length).toBe(testHelper.initialBlogs.length + 1)
 
-    const addedBlog = response.body.find(
-        (b) => b.title === testHelper.blogToAdd.title
-    )
+        const addedBlog = response.body.find(
+            (b) => b.title === testHelper.blogToAdd.title
+        )
 
-    expect(addedBlog).toBeDefined()
-    expect(addedBlog.author).toBe(testHelper.blogToAdd.author)
-    expect(addedBlog.url).toBe(testHelper.blogToAdd.url)
-    expect(addedBlog.likes).toBe(testHelper.blogToAdd.likes)
+        expect(addedBlog).toBeDefined()
+        expect(addedBlog.author).toBe(testHelper.blogToAdd.author)
+        expect(addedBlog.url).toBe(testHelper.blogToAdd.url)
+        expect(addedBlog.likes).toBe(testHelper.blogToAdd.likes)
+    })
+
+    test("added blog likes is 0 if not provided", async () => {
+        const { likes, ...newBlog } = testHelper.blogToAdd
+
+        await api
+            .post("/api/blogs")
+            .send(newBlog)
+            .expect(201)
+            .expect("Content-Type", /application\/json/)
+
+        const response = await api.get("/api/blogs")
+        const addedBlog = response.body.find(
+            (b) => b.title === testHelper.blogToAdd.title
+        )
+
+        expect(addedBlog.likes).toBe(0)
+    })
+
+    test("blogs without title or url are not added", async () => {
+        const { title, ...noTitleBlog } = testHelper.blogToAdd
+        const { url, ...noUrlBlog } = testHelper.blogToAdd
+
+        await api.post("/api/blogs").send(noTitleBlog).expect(400)
+        await api.post("/api/blogs").send(noUrlBlog).expect(400)
+    })
 })
 
-test("added blog likes is 0 if not provided", async () => {
-    const { likes, ...newBlog } = testHelper.blogToAdd
+describe("deleting blog", () => {
+    test("blog is properly deleted", async () => {
+        const blogIdToDelete = testHelper.initialBlogs[0]._id
 
-    await api
-        .post("/api/blogs")
-        .send(newBlog)
-        .expect(201)
-        .expect("Content-Type", /application\/json/)
+        await api.delete(`/api/blogs/${blogIdToDelete}`).expect(204)
+        const response = await api.get("/api/blogs")
 
-    const response = await api.get("/api/blogs")
-    const addedBlog = response.body.find(
-        (b) => b.title === testHelper.blogToAdd.title
-    )
-
-    expect(addedBlog.likes).toBe(0)
-})
-
-test("blogs without title or url are not added", async () => {
-    const { title, ...noTitleBlog } = testHelper.blogToAdd
-    const { url, ...noUrlBlog } = testHelper.blogToAdd
-
-    await api.post("/api/blogs").send(noTitleBlog).expect(400)
-    await api.post("/api/blogs").send(noUrlBlog).expect(400)
+        expect(response.body.length).toBe(testHelper.initialBlogs.length - 1)
+        expect(
+            response.body.find((b) => b.id === blogIdToDelete)
+        ).toBeUndefined()
+    })
 })
 
 afterAll(() => mongoose.connection.close())
