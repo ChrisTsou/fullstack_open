@@ -1,3 +1,6 @@
+// const bcrypt = require("bcrypt")
+// const saltRounds = 10
+
 const initialBlogs = [
     {
         _id: "5a422a851b54a676234d17f7",
@@ -55,12 +58,12 @@ const initialUsers = [
     {
         username: "testUser0",
         name: "User0",
-        passwordHash: "hash0",
+        passwordHash: "hash0", //bcrypt.hashSync("password0", saltRounds),
     },
     {
         username: "testUser1",
         name: "User1",
-        passwordHash: "hash1",
+        passwordHash: "hash1", //bcrypt.hashSync("password1", saltRounds),
     },
 ]
 
