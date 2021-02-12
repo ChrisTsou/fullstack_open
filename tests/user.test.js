@@ -37,26 +37,69 @@ describe("getting users", () => {
 })
 
 describe("adding user", () => {
-    let response
+    describe("with good fields", () => {
+        let response
 
-    beforeEach(async () => {
-        const newUser = testHelper.userToAdd
-        await api.post("/api/users").send(newUser)
-        response = await api.get("/api/users")
+        beforeEach(async () => {
+            await api.post("/api/users").send(testHelper.userToAdd)
+            response = await api.get("/api/users")
+        })
+
+        test("db has 1 more user after addition", async () => {
+            expect(response.body.length).toBe(
+                testHelper.initialUsers.length + 1
+            )
+        })
+
+        test("added user has his fields defined", async () => {
+            const user = response.body.find(
+                (u) => u.username === testHelper.userToAdd.username
+            )
+            expect(user).toBeDefined()
+            expect(user.username).toBeDefined()
+            expect(user.name).toBeDefined()
+            expect(user.id).toBeDefined()
+        })
     })
 
-    test("db has 1 more user after addition", async () => {
-        expect(response.body.length).toBe(testHelper.initialUsers.length + 1)
-    })
+    describe("with bad fields", () => {
+        let newUser //careful doing this with parallel tests
 
-    test("added user has his fields defined", async () => {
-        const user = response.body.find(
-            (u) => u.username === testHelper.userToAdd.username
-        )
-        expect(user).toBeDefined()
-        expect(user.username).toBeDefined()
-        expect(user.name).toBeDefined()
-        expect(user.id).toBeDefined()
+        afterEach(async () => {
+            const response = await api
+                .post("/api/users")
+                .send(newUser)
+                .expect(400)
+
+            expect(response.body.error).toBeDefined()
+
+            const users = await api.get("/api/users")
+            expect(users.body.length).toBe(testHelper.initialUsers.length)
+        })
+
+        test("username already exists", async () => {
+            const username = testHelper.initialUsers[0].username
+            newUser = {
+                ...testHelper.userToAdd,
+                username,
+            }
+        })
+
+        test("username is less than 3 characters long", async () => {
+            const username = "ab"
+            newUser = {
+                ...testHelper.userToAdd,
+                username,
+            }
+        })
+
+        test("password is less than 3 characters long", async () => {
+            const password = "ab"
+            newUser = {
+                ...testHelper.userToAdd,
+                password,
+            }
+        })
     })
 })
 
