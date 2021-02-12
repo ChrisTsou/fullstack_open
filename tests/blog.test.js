@@ -13,14 +13,14 @@ beforeEach(async () => {
     await Promise.all(promiseArray)
 })
 
-describe("basic get tests", () => {
+describe("getting blogs", () => {
     test("right number of blogs are returned", async () => {
         const response = await api.get("/api/blogs")
 
         expect(response.body.length).toBe(testHelper.initialBlogs.length)
     })
 
-    test("blogs have id property", async () => {
+    test("blogs have id fields", async () => {
         const response = await api.get("/api/blogs")
 
         response.body.forEach((blog) => {
@@ -30,9 +30,9 @@ describe("basic get tests", () => {
 })
 
 describe("adding a blog", () => {
-    test("blog is added properly with post", async () => {
-        const newBlog = new Blog(testHelper.blogToAdd)
-        await newBlog.save()
+    test("blogs are one more after add. added blog has its fields", async () => {
+        const newBlog = testHelper.blogToAdd
+        await api.post("/api/blogs").send(newBlog).expect(201)
 
         const response = await api.get("/api/blogs")
 
@@ -46,6 +46,7 @@ describe("adding a blog", () => {
         expect(addedBlog.author).toBe(testHelper.blogToAdd.author)
         expect(addedBlog.url).toBe(testHelper.blogToAdd.url)
         expect(addedBlog.likes).toBe(testHelper.blogToAdd.likes)
+        expect(addedBlog.user).toBeDefined()
     })
 
     test("added blog likes is 0 if not provided", async () => {

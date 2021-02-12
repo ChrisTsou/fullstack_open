@@ -23,12 +23,11 @@ describe("getting users", () => {
         expect(response.body.length).toBe(testHelper.initialUsers.length)
     })
 
-    test("each response user has exactly 3 fields: username,name,id", async () => {
+    test("each response user has fields: username,name,id", async () => {
         const response = await api.get("/api/users")
         const users = response.body
 
         users.forEach((u) => {
-            expect(Object.keys(u).length).toBe(3)
             expect(u.username).toBeDefined()
             expect(u.name).toBeDefined()
             expect(u.id).toBeDefined()
@@ -51,7 +50,7 @@ describe("adding user", () => {
             )
         })
 
-        test("added user has his fields defined", async () => {
+        test("added user has username,name and id", async () => {
             const user = response.body.find(
                 (u) => u.username === testHelper.userToAdd.username
             )
