@@ -51,7 +51,28 @@ const blogToAdd = {
     likes: 2,
 }
 
+const initialUsers = [
+    {
+        username: "testUser0",
+        name: "User0",
+        passwordHash: "hash0",
+    },
+    {
+        username: "testUser1",
+        name: "User1",
+        passwordHash: "hash1",
+    },
+]
+
+const userToAdd = {
+    username: "addedUser",
+    name: "user add",
+    password: "addUserPassword123",
+}
+
 module.exports = {
     initialBlogs,
     blogToAdd,
+    initialUsers,
+    userToAdd,
 }
