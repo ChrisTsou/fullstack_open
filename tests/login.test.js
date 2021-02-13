@@ -28,7 +28,7 @@ test("login with correct password", async () => {
     expect(response.body.token).toBeDefined()
 })
 
-test("login with incorrect password", async () => {
+test("login with incorrect password returns 401 response", async () => {
     const response = await api
         .post("/api/login")
         .send({

@@ -1,15 +1,26 @@
 const mongoose = require("mongoose")
 const supertest = require("supertest")
 const Blog = require("../models/blog")
+const User = require("../models/user")
 const testHelper = require("./test_helper")
 const app = require("../app")
 const api = supertest(app)
+
+beforeAll(async () => {
+    await User.deleteMany({})
+
+    const userObjects = testHelper.initialUsers.map((u) => new User(u))
+    const promiseArray = userObjects.map((u) => u.save())
+
+    await Promise.all(promiseArray)
+})
 
 beforeEach(async () => {
     await Blog.deleteMany({})
 
     const blogObjects = testHelper.initialBlogs.map((blog) => new Blog(blog))
     const promiseArray = blogObjects.map((blog) => blog.save())
+
     await Promise.all(promiseArray)
 })
 
@@ -30,48 +41,88 @@ describe("getting blogs", () => {
 })
 
 describe("adding a blog", () => {
-    test("blogs are one more after add. added blog has its fields", async () => {
-        const newBlog = testHelper.blogToAdd
-        await api.post("/api/blogs").send(newBlog).expect(201)
-
-        const response = await api.get("/api/blogs")
-
-        expect(response.body.length).toBe(testHelper.initialBlogs.length + 1)
-
-        const addedBlog = response.body.find(
-            (b) => b.title === testHelper.blogToAdd.title
-        )
-
-        expect(addedBlog).toBeDefined()
-        expect(addedBlog.author).toBe(testHelper.blogToAdd.author)
-        expect(addedBlog.url).toBe(testHelper.blogToAdd.url)
-        expect(addedBlog.likes).toBe(testHelper.blogToAdd.likes)
-        expect(addedBlog.user).toBeDefined()
-    })
-
-    test("added blog likes is 0 if not provided", async () => {
-        const { likes, ...newBlog } = testHelper.blogToAdd
-
+    test("with invalid token returns 401", async () => {
         await api
             .post("/api/blogs")
-            .send(newBlog)
-            .expect(201)
-            .expect("Content-Type", /application\/json/)
-
-        const response = await api.get("/api/blogs")
-        const addedBlog = response.body.find(
-            (b) => b.title === testHelper.blogToAdd.title
-        )
-
-        expect(addedBlog.likes).toBe(0)
+            .send(testHelper.blogToAdd)
+            .set("authorization", "bearer invalidToken")
+            .expect(401)
     })
 
-    test("blogs without title or url are not added", async () => {
-        const { title, ...noTitleBlog } = testHelper.blogToAdd
-        const { url, ...noUrlBlog } = testHelper.blogToAdd
+    describe("with valid token", () => {
+        let token
+        beforeAll(async () => {
+            await api.post("/api/users").send(testHelper.userToAdd).expect(200)
 
-        await api.post("/api/blogs").send(noTitleBlog).expect(400)
-        await api.post("/api/blogs").send(noUrlBlog).expect(400)
+            const loginResponse = await api
+                .post("/api/login")
+                .send({
+                    username: testHelper.userToAdd.username,
+                    password: testHelper.userToAdd.password,
+                })
+                .expect(200)
+
+            token = loginResponse.body.token
+        })
+
+        test("blogs are one more after add. added blog has its fields", async () => {
+            const newBlog = testHelper.blogToAdd
+            await api
+                .post("/api/blogs")
+                .set("authorization", `bearer ${token}`)
+                .send(newBlog)
+                .expect(201)
+
+            const response = await api.get("/api/blogs")
+
+            expect(response.body.length).toBe(
+                testHelper.initialBlogs.length + 1
+            )
+
+            const addedBlog = response.body.find(
+                (b) => b.title === testHelper.blogToAdd.title
+            )
+
+            expect(addedBlog).toBeDefined()
+            expect(addedBlog.author).toBe(testHelper.blogToAdd.author)
+            expect(addedBlog.url).toBe(testHelper.blogToAdd.url)
+            expect(addedBlog.likes).toBe(testHelper.blogToAdd.likes)
+            expect(addedBlog.user).toBeDefined()
+        })
+
+        test("added blog likes is 0 if not provided", async () => {
+            const { likes, ...newBlog } = testHelper.blogToAdd
+
+            await api
+                .post("/api/blogs")
+                .set("authorization", `bearer ${token}`)
+                .send(newBlog)
+                .expect(201)
+                .expect("Content-Type", /application\/json/)
+
+            const response = await api.get("/api/blogs")
+            const addedBlog = response.body.find(
+                (b) => b.title === testHelper.blogToAdd.title
+            )
+
+            expect(addedBlog.likes).toBe(0)
+        })
+
+        test("blogs without title or url are not added", async () => {
+            const { title, ...noTitleBlog } = testHelper.blogToAdd
+            const { url, ...noUrlBlog } = testHelper.blogToAdd
+
+            await api
+                .post("/api/blogs")
+                .set("authorization", `bearer ${token}`)
+                .send(noTitleBlog)
+                .expect(400)
+            await api
+                .post("/api/blogs")
+                .set("authorization", `bearer ${token}`)
+                .send(noUrlBlog)
+                .expect(400)
+        })
     })
 })
 
