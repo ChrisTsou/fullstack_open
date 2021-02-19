@@ -1,5 +1,6 @@
-import axios from "axios"
-const baseUrl = "/api/blogs"
+import axios from 'axios'
+
+const baseUrl = '/api/blogs'
 
 let token = null
 
@@ -21,5 +22,23 @@ const getAll = async () => {
   return response.data
 }
 
-export default { getAll, setToken, create }
+const addLike = async (blog) => {
+  const newBlog = {
+    user: blog.user.id,
+    likes: blog.likes + 1,
+    author: blog.author,
+    title: blog.title,
+    url: blog.url,
+  }
 
+  // backend doesnt have authentication here
+  const response = await axios.put(`${baseUrl}/${blog.id}`, newBlog)
+  return response.data
+}
+
+export default {
+  getAll,
+  setToken,
+  create,
+  addLike,
+}

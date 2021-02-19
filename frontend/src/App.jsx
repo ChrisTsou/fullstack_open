@@ -56,14 +56,22 @@ const App = () => {
     notificationWithTimeout('logged out')
   }
 
-  const blogFormRef = useRef()
+  const addLike = async (blog) => {
+    try {
+      const updatedBlog = await blogService.addLike(blog)
+      setBlogs(blogs.map((b) => (b.id === blog.id ? { ...updatedBlog, user: blog.user } : b)))
+    } catch (exception) {
+      notificationWithTimeout(exception.message, true)
+    }
+  }
 
+  const blogFormRef = useRef()
   const addBlog = async (blogObject) => {
     try {
       blogFormRef.current.toggleVisibility()
-      await blogService.create(blogObject)
+      const newBlog = await blogService.create(blogObject)
 
-      setBlogs(blogs.concat(blogObject))
+      setBlogs(blogs.concat(newBlog))
       notificationWithTimeout(`a new blog ${blogObject.title} by ${blogObject.author} added`)
     } catch (exception) {
       notificationWithTimeout(exception.message, true)
@@ -85,7 +93,7 @@ const App = () => {
         <BlogForm createBlog={addBlog} />
       </Togglable>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} addLike={addLike} />
       ))}
     </div>
   )
