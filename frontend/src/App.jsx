@@ -78,6 +78,17 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blogId) => {
+    if (window.confirm('delete blog?')) {
+      try {
+        await blogService.deleteBlog(blogId)
+        setBlogs(blogs.filter((b) => b.id !== blogId))
+      } catch (e) {
+        notificationWithTimeout(e.message, true)
+      }
+    }
+  }
+
   const loggedInRender = () => (
     <div>
       <h2>blogs</h2>
@@ -89,13 +100,19 @@ const App = () => {
           logout
         </button>
       </p>
-      <Togglable showButtonLabel="new note" hideButtonLabel="cancel" ref={blogFormRef}>
+      <Togglable showButtonLabel="new blog" hideButtonLabel="cancel" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
       {blogs
         .sort((b0, b1) => b1.likes - b0.likes)
         .map((blog) => (
-          <Blog key={blog.id} blog={blog} addLike={addLike} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            addLike={addLike}
+            deleteBlog={deleteBlog}
+            currentUser={user}
+          />
         ))}
     </div>
   )
