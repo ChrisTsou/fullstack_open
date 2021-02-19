@@ -39,7 +39,10 @@ const App = () => {
 
     try {
       const loggedUser = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(loggedUser))
+      window.localStorage.setItem(
+        'loggedBlogappUser',
+        JSON.stringify(loggedUser)
+      )
       blogService.setToken(loggedUser.token)
       setUser(loggedUser)
       setUsername('')
@@ -59,7 +62,11 @@ const App = () => {
   const addLike = async (blog) => {
     try {
       const updatedBlog = await blogService.addLike(blog)
-      setBlogs(blogs.map((b) => (b.id === blog.id ? { ...updatedBlog, user: blog.user } : b)))
+      setBlogs(
+        blogs.map((b) =>
+          b.id === blog.id ? { ...updatedBlog, user: blog.user } : b
+        )
+      )
     } catch (exception) {
       notificationWithTimeout(exception.message, true)
     }
@@ -72,7 +79,9 @@ const App = () => {
       const newBlog = await blogService.create(blogObject)
 
       setBlogs(blogs.concat(newBlog))
-      notificationWithTimeout(`a new blog ${blogObject.title} by ${blogObject.author} added`)
+      notificationWithTimeout(
+        `a new blog ${blogObject.title} by ${blogObject.author} added`
+      )
     } catch (exception) {
       notificationWithTimeout(exception.message, true)
     }
@@ -93,14 +102,16 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <p>
-        {user.name}
-        {' '}
-        logged in
+        {user.name} logged in
         <button type="button" onClick={handleLogout}>
           logout
         </button>
       </p>
-      <Togglable showButtonLabel="new blog" hideButtonLabel="cancel" ref={blogFormRef}>
+      <Togglable
+        showButtonLabel="new blog"
+        hideButtonLabel="cancel"
+        ref={blogFormRef}
+      >
         <BlogForm createBlog={addBlog} />
       </Togglable>
       {blogs

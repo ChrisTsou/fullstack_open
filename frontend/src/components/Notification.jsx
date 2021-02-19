@@ -1,4 +1,5 @@
-import React from "react"
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const Notification = ({ notification }) => {
   if (notification === null) {
@@ -6,16 +7,20 @@ const Notification = ({ notification }) => {
   }
 
   const style = {
-    color: notification.isError ? "red" : "green",
-    background: "lightgrey",
+    color: notification.isError ? 'red' : 'green',
+    background: 'lightgrey',
     fontSize: 20,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
   }
 
   return <div style={style}>{notification.message}</div>
+}
+
+Notification.propTypes = {
+  notification: PropTypes.object,
 }
 
 export default Notification
