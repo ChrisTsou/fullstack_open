@@ -1,74 +1,74 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Blog from './components/Blog';
-import Notification from './components/Notification';
-import LoginForm from './components/LoginForm';
-import Togglable from './components/Togglable';
-import blogService from './services/blogs';
-import loginService from './services/login';
-import BlogForm from './components/BlogForm';
+import React, { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
+import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
+import blogService from './services/blogs'
+import loginService from './services/login'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [notification, setNotification] = useState(null);
+  const [blogs, setBlogs] = useState([])
+  const [user, setUser] = useState(null)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    blogService.getAll().then((b) => setBlogs(b))
+  }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const loggedUser = JSON.parse(loggedUserJSON)
+      setUser(loggedUser)
+      blogService.setToken(loggedUser.token)
     }
-  }, []);
+  }, [])
 
   const notificationWithTimeout = (message, isError = false) => {
-    setNotification({ message, isError });
+    setNotification({ message, isError })
     setTimeout(() => {
-      setNotification(null);
-    }, 5000);
-  };
+      setNotification(null)
+    }, 5000)
+  }
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      setUsername('');
-      setPassword('');
-      notificationWithTimeout('logged in');
+      const loggedUser = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(loggedUser))
+      blogService.setToken(loggedUser.token)
+      setUser(loggedUser)
+      setUsername('')
+      setPassword('')
+      notificationWithTimeout('logged in')
     } catch (exception) {
-      notificationWithTimeout(exception.message, true);
+      notificationWithTimeout(exception.message, true)
     }
-  };
+  }
 
   const handleLogout = () => {
-    window.localStorage.clear();
-    setUser(null);
-    notificationWithTimeout('logged out');
-  };
+    window.localStorage.clear()
+    setUser(null)
+    notificationWithTimeout('logged out')
+  }
 
-  const blogFormRef = useRef();
+  const blogFormRef = useRef()
 
   const addBlog = async (blogObject) => {
     try {
-      blogFormRef.current.toggleVisibility();
-      await blogService.create(blogObject);
+      blogFormRef.current.toggleVisibility()
+      await blogService.create(blogObject)
 
-      setBlogs(blogs.concat(blogObject));
-      notificationWithTimeout(`a new blog ${blogObject.title} by ${blogObject.author} added`);
+      setBlogs(blogs.concat(blogObject))
+      notificationWithTimeout(`a new blog ${blogObject.title} by ${blogObject.author} added`)
     } catch (exception) {
-      notificationWithTimeout(exception.message, true);
+      notificationWithTimeout(exception.message, true)
     }
-  };
+  }
 
   const loggedInRender = () => (
     <div>
@@ -77,7 +77,9 @@ const App = () => {
         {user.name}
         {' '}
         logged in
-        <button onClick={handleLogout}>logout</button>
+        <button type="button" onClick={handleLogout}>
+          logout
+        </button>
       </p>
       <Togglable buttonLabel="new note" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
@@ -86,7 +88,7 @@ const App = () => {
         <Blog key={blog.id} blog={blog} />
       ))}
     </div>
-  );
+  )
 
   return (
     <div>
@@ -103,7 +105,7 @@ const App = () => {
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
