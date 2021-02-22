@@ -20,15 +20,15 @@ const Blog = ({ blog, addLike, deleteBlog, currentUser }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div>
+    <div style={blogStyle} className="blog">
+      <div className="blogInfo">
         {blog.title} {blog.author}
         <button type="button" onClick={() => setShowDetails(!showDetails)}>
           {showDetails ? 'hide' : 'view'}
         </button>
       </div>
       {showDetails ? (
-        <div>
+        <div className="blogDetails">
           <div>{blog.url}</div>
           <div>
             likes: {blog.likes}{' '}
