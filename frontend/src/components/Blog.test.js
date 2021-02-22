@@ -14,9 +14,14 @@ const blog = {
   },
 }
 
+let mockAddLike
+let mockdeleteBlog
 let component
 
 beforeEach(() => {
+  mockAddLike = jest.fn()
+  mockdeleteBlog = jest.fn()
+
   component = render(
     <Blog
       blog={blog}
@@ -24,8 +29,8 @@ beforeEach(() => {
         username: 'test-username',
         name: 'test-name',
       }}
-      addLike={() => null}
-      deleteBlog={() => null}
+      addLike={mockAddLike}
+      deleteBlog={mockdeleteBlog}
     />
   )
 })
@@ -46,4 +51,15 @@ test('renders url,likes when button is pressed', () => {
   expect(details).toHaveTextContent('test-url')
   expect(details).toHaveTextContent('likes: 3')
   expect(details).toHaveTextContent('test-name')
+})
+
+test('like button calls event handler appropriate times', () => {
+  const viewButton = component.getByText('view')
+  fireEvent.click(viewButton)
+
+  const likeButton = component.getByText('like')
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+
+  expect(mockAddLike.mock.calls).toHaveLength(2)
 })
