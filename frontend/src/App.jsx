@@ -47,9 +47,9 @@ const App = () => {
       setUser(loggedUser)
       setUsername('')
       setPassword('')
-      notificationWithTimeout('logged in')
+      notificationWithTimeout('Logged in')
     } catch (exception) {
-      notificationWithTimeout(exception.message, true)
+      notificationWithTimeout('Wrong credentials', true)
     }
   }
 
