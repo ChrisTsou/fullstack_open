@@ -30,6 +30,7 @@ describe('Blog app', () => {
       cy.get('#password').type('wrongPassword')
       cy.get('#login-button').click()
       cy.contains('Wrong credentials')
+      cy.get('#notification').should('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
 })
