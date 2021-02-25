@@ -45,7 +45,18 @@ describe('Blog app', () => {
       cy.get('#blogAuthor').type('test-author')
       cy.get('#blogUrl').type('test-url')
       cy.get('#createBlogButton').click()
-      cy.contains('test-title test-author')
+      cy.get('.blogInfo').contains('test-title test-author')
+    })
+
+    it('A blog can be liked', () => {
+      cy.createBlog({
+        title: 'test-title',
+        author: 'test-author',
+        url: 'test-url',
+      })
+      cy.get('.blogInfo').contains('view').click()
+      cy.get('.blogDetails').contains('like').click()
+      cy.get('.blogDetails').contains('likes: 1')
     })
   })
 })
