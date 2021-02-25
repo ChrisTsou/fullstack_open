@@ -33,4 +33,19 @@ describe('Blog app', () => {
       cy.get('#notification').should('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
+
+  describe.only('When logged in', () => {
+    beforeEach(() => {
+      cy.login({ username: user.username, password: user.password })
+    })
+
+    it('A blog can be created', () => {
+      cy.contains('new blog').click()
+      cy.get('#blogTitle').type('test-title')
+      cy.get('#blogAuthor').type('test-author')
+      cy.get('#blogUrl').type('test-url')
+      cy.get('#createBlogButton').click()
+      cy.contains('test-title test-author')
+    })
+  })
 })
