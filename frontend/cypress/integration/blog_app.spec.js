@@ -34,10 +34,16 @@ describe('Blog app', () => {
     })
   })
 
-  describe.only('When logged in', () => {
+  describe('When logged in', () => {
     beforeEach(() => {
       cy.login({ username: user.username, password: user.password })
     })
+
+    const testBlog = {
+      title: 'test-title',
+      author: 'test-author',
+      url: 'test-url',
+    }
 
     it('A blog can be created', () => {
       cy.contains('new blog').click()
@@ -49,14 +55,33 @@ describe('Blog app', () => {
     })
 
     it('A blog can be liked', () => {
-      cy.createBlog({
-        title: 'test-title',
-        author: 'test-author',
-        url: 'test-url',
-      })
+      cy.createBlog(testBlog)
       cy.get('.blogInfo').contains('view').click()
       cy.get('.blogDetails').contains('like').click()
       cy.get('.blogDetails').contains('likes: 1')
+    })
+
+    it('A blog can be deleted by the user that created it', () => {
+      cy.createBlog(testBlog)
+      cy.visit('http://localhost:3000')
+      cy.contains('delete').click()
+      cy.get('html').should('not.contain', 'test-title test-author')
+    })
+
+    it('A blog cannot be deleted by a use that didnt create it', () => {
+      cy.createBlog(testBlog)
+      cy.contains('logout').click()
+
+      const testUser = {
+        username: 'test-username',
+        name: 'test-name',
+        password: 'test-password',
+      }
+      cy.request('POST', 'http://localhost:3001/api/users', testUser)
+      cy.login({ username: testUser.username, password: testUser.password })
+      cy.visit('http://localhost:3000')
+
+      cy.get('.blog').should('not.contain', 'delete')
     })
   })
 })
