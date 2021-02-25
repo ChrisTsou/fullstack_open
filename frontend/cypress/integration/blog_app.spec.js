@@ -83,5 +83,31 @@ describe('Blog app', () => {
 
       cy.get('.blog').should('not.contain', 'delete')
     })
+
+    it.only('Blogs are ordered by their likes', () => {
+      cy.createBlog(testBlog)
+      cy.createBlog({
+        title: 'test-title1',
+        author: 'test-author1',
+        url: 'test-url1',
+        likes: 10,
+      })
+      cy.createBlog({
+        title: 'test-title2',
+        author: 'test-author2',
+        url: 'test-url2',
+        likes: 3,
+      })
+
+      cy.get('.blog').then((blogs) => {
+        expect(blogs.length).to.equal(3)
+        cy.wrap(blogs).each((blog) => {
+          cy.wrap(blog).contains('view').click()
+        })
+        cy.wrap(blogs[0]).contains('likes: 10')
+        cy.wrap(blogs[1]).contains('likes: 3')
+        cy.wrap(blogs[2]).contains('likes: 0')
+      })
+    })
   })
 })
