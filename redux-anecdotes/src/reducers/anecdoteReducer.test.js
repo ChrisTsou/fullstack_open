@@ -33,4 +33,18 @@ describe("anecdoteReducer", () => {
       },
     ]);
   });
+
+  test("anecdote is created", () => {
+    const action = {
+      type: "CREATE",
+      data: "anecdote2",
+    };
+    const state = initialState;
+
+    deepFreeze(state);
+    const newState = anecdoteReducer(state, action);
+    expect(newState[2].content).toEqual("anecdote2");
+    expect(newState[2].id).toBeDefined();
+    expect(newState[2].votes).toEqual(0);
+  });
 });

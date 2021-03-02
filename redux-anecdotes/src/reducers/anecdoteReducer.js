@@ -30,6 +30,15 @@ const reducer = (state = initialState, action) => {
               votes: a.votes + 1,
             }
       );
+    case "CREATE":
+      return [
+        ...state,
+        {
+          content: action.data,
+          id: getId(),
+          votes: 0,
+        },
+      ];
     default:
       return state;
   }
@@ -39,6 +48,13 @@ export const anecdoteVote = (anecdoteId) => {
   return {
     type: "VOTE",
     data: anecdoteId,
+  };
+};
+
+export const createAnecdote = (content) => {
+  return {
+    type: "CREATE",
+    data: content,
   };
 };
 
