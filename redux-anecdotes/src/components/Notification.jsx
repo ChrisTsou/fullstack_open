@@ -9,7 +9,7 @@ const Notification = () => {
     borderWidth: 1,
   }
 
-  return <div style={style}>{notification}</div>
+  return notification === null ? null : <div style={style}>{notification}</div>
 }
 
 export default Notification
