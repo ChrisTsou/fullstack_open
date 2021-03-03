@@ -5,6 +5,7 @@ import { notificationSet, notificationDelete } from '../reducers/notificationRed
 
 const AnecdoteList = () => {
   const anecdotes = useSelector((state) => state.anecdotes)
+  const anecdoteFilter = useSelector((state) => state.filter)
   const dispatch = useDispatch()
 
   const handleVote = (id) => () => {
@@ -16,6 +17,7 @@ const AnecdoteList = () => {
   return (
     <>
       {anecdotes
+        .filter((a) => a.content.toLowerCase().includes(anecdoteFilter.toLowerCase()))
         .sort((a0, a1) => a1.votes - a0.votes)
         .map((anecdote) => (
           <div key={anecdote.id}>
