@@ -1,8 +1,15 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNotification } from '../hooks'
+import { likeBlog, deleteBlog } from '../reducers/blogs'
 
-const Blog = ({ blog, addLike, deleteBlog, currentUser }) => {
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch()
+  const notification = useNotification()
+  const user = useSelector((state) => state.user)
+
   const [showDetails, setShowDetails] = useState(false)
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,12 +18,22 @@ const Blog = ({ blog, addLike, deleteBlog, currentUser }) => {
     marginBottom: 5,
   }
 
-  const handleLike = () => {
-    addLike(blog)
+  const handleLike = async () => {
+    try {
+      dispatch(likeBlog(blog))
+    } catch (exception) {
+      notification.error(exception.message)
+    }
   }
 
   const handleDelete = () => {
-    deleteBlog(blog.id)
+    if (window.confirm('delete blog?')) {
+      try {
+        dispatch(deleteBlog(blog.id))
+      } catch (e) {
+        notification.error(e.message)
+      }
+    }
   }
 
   return (
@@ -39,20 +56,13 @@ const Blog = ({ blog, addLike, deleteBlog, currentUser }) => {
           <div>{blog.user.name}</div>
         </div>
       ) : null}
-      {currentUser.username === blog.user.username ? (
+      {user.username === blog.user.username ? (
         <button type="button" onClick={handleDelete}>
           delete
         </button>
       ) : null}
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  addLike: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-  currentUser: PropTypes.object.isRequired,
 }
 
 export default Blog
