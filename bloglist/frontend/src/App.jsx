@@ -5,6 +5,7 @@ import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Users from './components/Users'
+import User from './components/User'
 import { useNotification } from './hooks'
 import { loginUser, logoutUser } from './reducers/currentUser'
 import blogService from './services/blogs'
@@ -48,11 +49,14 @@ const App = () => {
       <Notification />
       <Route path={['/users', '/blogs']}>{title}</Route>
       <Switch>
-        <Route path="/blogs">
-          <Blogs />
+        <Route path="/users/:id">
+          <User />
         </Route>
         <Route path="/users">
           <Users />
+        </Route>
+        <Route path="/blogs">
+          <Blogs />
         </Route>
         <Route path="/login">
           <LoginForm />
