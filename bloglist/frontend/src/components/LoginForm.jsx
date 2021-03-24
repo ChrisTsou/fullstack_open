@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { useNotification } from '../hooks'
-import { loginUser } from '../reducers/user'
+import { loginUser } from '../reducers/currentUser'
 import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
   const notification = useNotification()
+  const history = useHistory()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -25,8 +27,9 @@ const LoginForm = () => {
         JSON.stringify(loggedUser)
       )
       blogService.setToken(loggedUser.token)
-      dispatch(loginUser(loggedUser))
       notification.notify('Logged in')
+      dispatch(loginUser(loggedUser))
+      history.push('/')
     } catch (exception) {
       notification.error('Wrong credentials')
     }

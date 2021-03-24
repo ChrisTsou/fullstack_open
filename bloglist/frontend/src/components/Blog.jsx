@@ -6,7 +6,7 @@ import { likeBlog, deleteBlog } from '../reducers/blogs'
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
   const notification = useNotification()
-  const user = useSelector((state) => state.user)
+  const currentUser = useSelector((state) => state.currentUser)
 
   const [showDetails, setShowDetails] = useState(false)
 
@@ -56,7 +56,7 @@ const Blog = ({ blog }) => {
           <div>{blog.user.name}</div>
         </div>
       ) : null}
-      {user.username === blog.user.username ? (
+      {currentUser.username === blog.user.username ? (
         <button type="button" onClick={handleDelete}>
           delete
         </button>
