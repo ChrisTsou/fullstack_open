@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNotification } from '../hooks'
-import { likeBlog, deleteBlog } from '../reducers/blogs'
+import {
+  likeBlog,
+  deleteBlog,
+  commentBlog,
+  initializeBlogs,
+} from '../reducers/blogs'
 import { useRouteMatch } from 'react-router-dom'
 
 const Blog = () => {
@@ -12,6 +17,12 @@ const Blog = () => {
   const dispatch = useDispatch()
   const notification = useNotification()
   const currentUser = useSelector((state) => state.currentUser)
+
+  const [comment, setComment] = useState('')
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   if (!blog) {
     return <p>oops! not found :/</p>
@@ -35,6 +46,17 @@ const Blog = () => {
     }
   }
 
+  const handleComment = async (event) => {
+    event.preventDefault()
+    try {
+      dispatch(commentBlog(comment, blog.id))
+      setComment('')
+      notification.notify('comment added!')
+    } catch (error) {
+      notification.error(error.message)
+    }
+  }
+
   return (
     <div>
       <h2>{blog.title}</h2>
@@ -54,6 +76,15 @@ const Blog = () => {
         </button>
       ) : null}
       <h2>comments</h2>
+      <form onSubmit={handleComment}>
+        <input
+          type="text"
+          value={comment}
+          name="Comment"
+          onChange={(event) => setComment(event.target.value)}
+        />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments.map((comment, index) => (
           <li key={index}>{comment}</li>
