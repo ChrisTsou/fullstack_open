@@ -1,21 +1,18 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Redirect, Route, Switch, useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import Blog from './components/Blog'
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
+import Navbar from './components/Navbar'
 import Notification from './components/Notification'
-import Users from './components/Users'
 import User from './components/User'
-import Blog from './components/Blog'
-import { useNotification } from './hooks'
-import { loginUser, logoutUser } from './reducers/currentUser'
+import Users from './components/Users'
+import { loginUser } from './reducers/currentUser'
 import blogService from './services/blogs'
 
 const App = () => {
   const dispatch = useDispatch()
-  const currentUser = useSelector((state) => state.currentUser)
-  const notification = useNotification()
-  const history = useHistory()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -26,29 +23,11 @@ const App = () => {
     }
   }, [dispatch])
 
-  const handleLogout = () => {
-    window.localStorage.clear()
-    dispatch(logoutUser())
-    notification.notify('Logged out')
-    history.push('/login')
-  }
-
-  const title = currentUser ? (
-    <>
-      <h2>blogs</h2>
-      <p>
-        {currentUser.name} logged in
-        <button type="button" onClick={handleLogout}>
-          logout
-        </button>
-      </p>
-    </>
-  ) : null
-
   return (
     <>
+      <Navbar />
       <Notification />
-      <Route path={['/users', '/blogs']}>{title}</Route>
+      <h1>blog app</h1>
       <Switch>
         <Route path="/users/:id">
           <User />
