@@ -28,6 +28,7 @@ blogRouter.post("/", async (request, response) => {
         author: body.author,
         url: body.url,
         likes: body.likes || 0,
+        comments: [],
         user: user._id,
     })
 
@@ -64,6 +65,16 @@ blogRouter.put("/:id", async (request, response) => {
         new: true,
         runValidators: true,
     }).populate("user")
+
+    response.json(updatedBlog)
+})
+
+blogRouter.post("/:id/comments", async (request, response) => {
+    const comment = request.body.comment
+
+    const blog = await Blog.findById(request.params.id)
+    blog.comments = blog.comments.concat(comment)
+    const updatedBlog = await blog.save()
 
     response.json(updatedBlog)
 })
