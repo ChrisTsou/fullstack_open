@@ -1,21 +1,20 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNotification } from '../hooks'
 import { likeBlog, deleteBlog } from '../reducers/blogs'
+import { useRouteMatch } from 'react-router-dom'
 
-const Blog = ({ blog }) => {
+const Blog = () => {
+  const match = useRouteMatch('/blogs/:id')
+  const blog = useSelector((state) =>
+    state.blogs.find((blog) => blog.id === match.params.id)
+  )
   const dispatch = useDispatch()
   const notification = useNotification()
   const currentUser = useSelector((state) => state.currentUser)
 
-  const [showDetails, setShowDetails] = useState(false)
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
+  if (!blog) {
+    return <p>oops! not found :/</p>
   }
 
   const handleLike = async () => {
@@ -37,25 +36,18 @@ const Blog = ({ blog }) => {
   }
 
   return (
-    <div style={blogStyle} className="blog">
-      <div className="blogInfo">
-        {blog.title} {blog.author}
-        <button type="button" onClick={() => setShowDetails(!showDetails)}>
-          {showDetails ? 'hide' : 'view'}
-        </button>
-      </div>
-      {showDetails ? (
-        <div className="blogDetails">
-          <div>{blog.url}</div>
-          <div>
-            likes: {blog.likes}{' '}
-            <button type="button" onClick={handleLike}>
-              like
-            </button>
-          </div>
-          <div>{blog.user.name}</div>
+    <div>
+      <h2>{blog.title}</h2>
+      <div>
+        <a href={blog.url}>{blog.url}</a>
+        <div>
+          likes: {blog.likes}{' '}
+          <button type="button" onClick={handleLike}>
+            like
+          </button>
         </div>
-      ) : null}
+        <div>added by {blog.user.name}</div>
+      </div>
       {currentUser.username === blog.user.username ? (
         <button type="button" onClick={handleDelete}>
           delete
