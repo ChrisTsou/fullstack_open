@@ -1,3 +1,4 @@
+import { Container, Typography } from '@material-ui/core'
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
@@ -24,10 +25,12 @@ const App = () => {
   }, [dispatch])
 
   return (
-    <>
+    <Container>
       <Navbar />
       <Notification />
-      <h1>blog app</h1>
+      <Typography variant="h3" paragraph>
+        blog app
+      </Typography>
       <Switch>
         <Route path="/users/:id">
           <User />
@@ -48,7 +51,7 @@ const App = () => {
           <Redirect to="/blogs" />
         </Route>
       </Switch>
-    </>
+    </Container>
   )
 }
 

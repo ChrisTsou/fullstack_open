@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
+import { Alert } from '@material-ui/lab'
 
 const Notification = () => {
   const notification = useSelector((state) => state.notification)
@@ -9,20 +10,12 @@ const Notification = () => {
     return null
   }
 
-  const style = {
-    color: notification.isError ? 'red' : 'green',
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  }
+  const severity = notification.isError ? 'error' : 'success'
 
   return (
-    <div id="notification" style={style}>
+    <Alert severity={severity} id="notification">
       {notification.message}
-    </div>
+    </Alert>
   )
 }
 

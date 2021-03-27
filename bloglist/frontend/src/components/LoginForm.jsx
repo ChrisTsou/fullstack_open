@@ -1,10 +1,11 @@
+import { Typography, Grid, Button, TextField } from '@material-ui/core'
 import React, { useState } from 'react'
-import loginService from '../services/login'
-import blogService from '../services/blogs'
-import { useNotification } from '../hooks'
-import { loginUser } from '../reducers/currentUser'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { useNotification } from '../hooks'
+import { loginUser } from '../reducers/currentUser'
+import blogService from '../services/blogs'
+import loginService from '../services/login'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -37,31 +38,37 @@ const LoginForm = () => {
 
   return (
     <div>
-      <h2>Log in to application</h2>
+      <Typography variant="h5" paragraph>
+        Log in to application
+      </Typography>
       <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            id="username"
-            type="text"
-            value={username}
-            name="Username"
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            id="password"
-            type="password"
-            value={password}
-            name="Password"
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </div>
-        <button id="login-button" type="submit">
-          login
-        </button>
+        <Grid container spacing={2} direction="column" alignItems="flex-start">
+          <Grid item>
+            <TextField
+              required
+              id="outlined-required"
+              label="Username"
+              variant="outlined"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              required
+              id="outlined-required"
+              label="Password"
+              variant="outlined"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" type="submit">
+              login
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </div>
   )

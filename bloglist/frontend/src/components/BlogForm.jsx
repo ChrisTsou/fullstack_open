@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { createBlog } from '../reducers/blogs'
 import { useDispatch } from 'react-redux'
 import { useNotification } from '../hooks'
+import { Grid, Typography, Button, TextField } from '@material-ui/core'
 
 const BlogForm = () => {
   const dispatch = useDispatch()
@@ -35,35 +36,36 @@ const BlogForm = () => {
 
   return (
     <div>
-      <h2>create new</h2>
+      <Typography variant="h5">create new</Typography>
       <form onSubmit={addBlog}>
-        <label htmlFor="blogTitle">Title:</label>
-        <input
-          type="text"
-          value={blogTitle}
-          name="BlogTitle"
-          id="blogTitle"
-          onChange={({ target }) => setBlogTitle(target.value)}
-        />
-        <label htmlFor="blogAuthor">Author:</label>
-        <input
-          type="text"
-          value={blogAuthor}
-          name="BlogAuthor"
-          id="blogAuthor"
-          onChange={({ target }) => setBlogAuthor(target.value)}
-        />
-        <label htmlFor="blogUrl">Url:</label>
-        <input
-          type="text"
-          value={blogUrl}
-          name="BlogUrl"
-          id="blogUrl"
-          onChange={({ target }) => setBlogUrl(target.value)}
-        />
-        <button id="createBlogButton" type="submit">
-          create
-        </button>
+        <Grid container direction="column" alignItems="flex-start" spacing={1}>
+          <Grid item>
+            <TextField
+              label="Title:"
+              value={blogTitle}
+              onChange={({ target }) => setBlogTitle(target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label="Author:"
+              value={blogAuthor}
+              onChange={({ target }) => setBlogAuthor(target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label="Url:"
+              value={blogUrl}
+              onChange={({ target }) => setBlogUrl(target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <Button variant="outlined" type="submit">
+              create
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </div>
   )

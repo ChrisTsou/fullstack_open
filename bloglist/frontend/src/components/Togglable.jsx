@@ -1,44 +1,27 @@
-import React, { useState, useImperativeHandle } from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import { Grid, Button } from '@material-ui/core'
 
-const Togglable = React.forwardRef(
-  ({ showButtonLabel, hideButtonLabel, children }, ref) => {
-    const [visible, setVisible] = useState(false)
+const Togglable = ({ showButtonLabel, hideButtonLabel, children }) => {
+  const [visible, setVisible] = useState(false)
 
-    const hideWhenVisible = { display: visible ? 'none' : '' }
-    const showWhenVisible = { display: visible ? '' : 'none' }
-
-    const toggleVisibility = () => {
-      setVisible(!visible)
-    }
-
-    useImperativeHandle(ref, () => ({
-      toggleVisibility,
-    }))
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button type="button" onClick={toggleVisibility}>
-            {showButtonLabel}
-          </button>
-        </div>
-        <div style={showWhenVisible}>
-          {children}
-          <button type="button" onClick={toggleVisibility}>
-            {hideButtonLabel}
-          </button>
-        </div>
-      </div>
-    )
+  const toggleVisibility = () => {
+    setVisible(!visible)
   }
-)
 
-Togglable.propTypes = {
-  showButtonLabel: PropTypes.string.isRequired,
-  hideButtonLabel: PropTypes.string.isRequired,
+  return (
+    <Grid container direction="column" alignItems="flex-start" spacing={3}>
+      {visible && <Grid item>{children}</Grid>}
+      <Grid item>
+        <Button
+          component={Button}
+          variant="contained"
+          onClick={toggleVisibility}
+        >
+          {visible ? hideButtonLabel : showButtonLabel}
+        </Button>
+      </Grid>
+    </Grid>
+  )
 }
-
-Togglable.displayName = 'Togglable'
 
 export default Togglable

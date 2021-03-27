@@ -1,3 +1,4 @@
+import { Typography, Grid } from '@material-ui/core'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
@@ -13,27 +14,27 @@ const Blogs = () => {
     dispatch(initializeBlogs())
   }, [dispatch])
 
-  const style = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
   return (
-    <div>
+    <>
       <Togglable showButtonLabel="new blog" hideButtonLabel="cancel">
         <BlogForm />
       </Togglable>
-      {blogs
-        .sort((b0, b1) => b1.likes - b0.likes)
-        .map((blog) => (
-          <div style={style} key={blog.id}>
-            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-          </div>
-        ))}
-    </div>
+      <Grid container direction="column" spacing={2}>
+        {blogs
+          .sort((b0, b1) => b1.likes - b0.likes)
+          .map((blog) => (
+            <Grid item key={blog.id}>
+              <Typography
+                variant="h6"
+                component={Link}
+                to={`/blogs/${blog.id}`}
+              >
+                {blog.title}
+              </Typography>
+            </Grid>
+          ))}
+      </Grid>
+    </>
   )
 }
 
