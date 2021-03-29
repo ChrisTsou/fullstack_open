@@ -82,4 +82,3 @@ const NewBook = (props) => {
 };
 
 export default NewBook;
-
