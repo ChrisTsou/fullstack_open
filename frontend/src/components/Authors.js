@@ -31,7 +31,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <SetBirth />
+      <SetBirth authorNames={authors.map((a) => a.name)} />
     </div>
   );
 };
