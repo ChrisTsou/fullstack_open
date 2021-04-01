@@ -1,36 +1,40 @@
-import React from "react";
-import { ALL_BOOKS_NO_GENRE } from "../queries";
+import React, { useState } from "react";
+import { ALL_BOOKS } from "../queries";
 import { useQuery } from "@apollo/client";
+import BookTable from "./BookTable";
 
 const Books = (props) => {
-  const result = useQuery(ALL_BOOKS_NO_GENRE);
+  const result = useQuery(ALL_BOOKS);
+  const [genreFilter, setGenreFilter] = useState(null);
 
   if (!props.show || result.loading) {
     return null;
   }
 
-  const books = result.data.allBooks;
+  let books = result.data.allBooks;
+  const genres = [...new Set(books.flatMap((book) => book.genres))];
+
+  if (genreFilter) {
+    books = books.filter((b) => b.genres.includes(genreFilter));
+  }
 
   return (
     <div>
       <h2>books</h2>
-
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>author</th>
-            <th>published</th>
-          </tr>
-          {books.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {genreFilter ? (
+        <h4>
+          in genre <em>{genreFilter}</em>
+        </h4>
+      ) : null}
+      <BookTable books={books} />
+      <div>
+        {genres.map((genre, index) => (
+          <button key={index} onClick={() => setGenreFilter(genre)}>
+            {genre}
+          </button>
+        ))}
+        <button onClick={() => setGenreFilter(null)}>all genres</button>
+      </div>
     </div>
   );
 };
