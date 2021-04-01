@@ -31,7 +31,9 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <SetBirth authorNames={authors.map((a) => a.name)} />
+      {props.token ? (
+        <SetBirth authorNames={authors.map((a) => a.name)} />
+      ) : null}
     </div>
   );
 };

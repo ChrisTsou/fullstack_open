@@ -23,3 +23,11 @@ export const ALL_BOOKS_NO_GENRE = gql`
     }
   }
 `;
+
+export const LOGIN = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      value
+    }
+  }
+`;
