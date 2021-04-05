@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ALL_BOOKS } from "../queries";
+import { ALL_BOOKS } from "../gql/queries";
 import { useQuery } from "@apollo/client";
 import BookTable from "./BookTable";
 

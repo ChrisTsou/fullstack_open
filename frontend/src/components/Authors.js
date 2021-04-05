@@ -1,5 +1,5 @@
 import React from "react";
-import { ALL_AUTHORS } from "../queries";
+import { ALL_AUTHORS } from "../gql/queries";
 import { useQuery } from "@apollo/client";
 import SetBirth from "./SetBirth";
 

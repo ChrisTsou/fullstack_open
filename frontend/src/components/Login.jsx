@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useApolloClient, useMutation } from "@apollo/client";
-import { LOGIN } from "../mutations";
-import { ME } from "../queries";
+import { LOGIN } from "../gql/mutations";
+import { ME } from "../gql/queries";
 
 const Login = ({ show, setToken }) => {
   const client = useApolloClient();
@@ -18,6 +18,7 @@ const Login = ({ show, setToken }) => {
       client.query({
         query: ME,
         fetchPolicy: "network-only",
+        nextFetchPolicy: "cache-first",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

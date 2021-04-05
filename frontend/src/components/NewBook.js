@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { CREATE_BOOK } from "../mutations";
-import { ALL_BOOKS } from "../queries";
+import { CREATE_BOOK } from "../gql/mutations";
+import { ALL_BOOKS } from "../gql/queries";
 import { useMutation } from "@apollo/client";
 
 const NewBook = (props) => {

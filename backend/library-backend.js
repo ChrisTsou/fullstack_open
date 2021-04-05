@@ -3,12 +3,15 @@ const {
   gql,
   UserInputError,
   AuthenticationError,
+  PubSub,
 } = require("apollo-server");
 const mongoose = require("mongoose");
 const Book = require("./schemas/Book");
 const Author = require("./schemas/Author");
 const User = require("./schemas/User");
 const jwt = require("jsonwebtoken");
+
+const pubsub = new PubSub();
 
 const JWT_SECRET = "1234";
 
@@ -75,6 +78,10 @@ const typeDefs = gql`
     createUser(username: String!, favoriteGenre: String!): User
 
     login(username: String!, password: String!): Token
+  }
+
+  type Subscription {
+    bookAdded: Book!
   }
 `;
 
@@ -145,6 +152,8 @@ const resolvers = {
 
       const populatedBook = await book.populate("author").execPopulate();
 
+      pubsub.publish("BOOK_ADDED", { bookAdded: populatedBook });
+
       return populatedBook;
     },
 
@@ -191,6 +200,12 @@ const resolvers = {
     },
   },
 
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(["BOOK_ADDED"]),
+    },
+  },
+
   Author: {
     bookCount: (root) => {
       const count = Book.countDocuments({ author: root.id });
@@ -212,6 +227,7 @@ const server = new ApolloServer({
   },
 });
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`);
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`);
 });

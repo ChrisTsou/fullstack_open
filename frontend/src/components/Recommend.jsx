@@ -1,6 +1,6 @@
 import { useQuery, useLazyQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { ALL_BOOKS, ME } from "../queries";
+import { ALL_BOOKS, ME } from "../gql/queries";
 import BookTable from "./BookTable";
 
 const Recommend = ({ show }) => {

@@ -4,7 +4,8 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Login from "./components/Login";
 import Recommend from "./components/Recommend";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
+import { BOOK_ADDED } from "./gql/subscriptions";
 
 const App = () => {
   const [page, setPage] = useState("books");
@@ -18,6 +19,12 @@ const App = () => {
       setToken(storageToken);
     }
   }, []);
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert("book added to the server");
+    },
+  });
 
   const handleLogout = () => {
     setToken(null);
