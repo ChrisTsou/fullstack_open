@@ -31,6 +31,8 @@ mongoose
     console.log("failed to connect to MongoDB: ", error.message)
   );
 
+mongoose.set("debug", true);
+
 const typeDefs = gql`
   type Book {
     title: String!
@@ -121,9 +123,14 @@ const resolvers = {
     addBook: async (root, { author, ...args }, context) => {
       const currentUser = context.currentUser;
 
+      if (!currentUser) {
+        throw new AuthenticationError("not authenticated");
+      }
+
       let authorFromDb = await Author.findOne({ name: author });
+
       if (!authorFromDb) {
-        const newAuthor = new Author({ name: author });
+        const newAuthor = new Author({ name: author, bookCount: 1 });
         try {
           authorFromDb = await newAuthor.save();
         } catch (error) {
@@ -131,16 +138,16 @@ const resolvers = {
             invalidArgs: args,
           });
         }
+      } else {
+        await Author.findByIdAndUpdate(authorFromDb._id, {
+          bookCount: authorFromDb.bookCount + 1,
+        });
       }
 
       const book = new Book({
         ...args,
         author: authorFromDb._id,
       });
-
-      if (!currentUser) {
-        throw new AuthenticationError("not authenticated");
-      }
 
       try {
         await book.save();
@@ -206,12 +213,31 @@ const resolvers = {
     },
   },
 
-  Author: {
-    bookCount: (root) => {
-      const count = Book.countDocuments({ author: root.id });
-      return count;
-    },
-  },
+  // Author: {
+  //   bookCount: async (root) => {
+  //     if (root.bookCount || root.bookCount === 0) {
+  //       return root.bookCount;
+  //     } else {
+  //       console.log("counting author books");
+  //       const count = await Book.countDocuments({ author: root.id });
+  //       try {
+  //         await Author.findByIdAndUpdate(
+  //           root.id,
+  //           {
+  //             bookCount: count,
+  //           },
+  //           {
+  //             new: true,
+  //           }
+  //         );
+  //       } catch (error) {
+  //         console.log(error.message);
+  //       }
+  //       root.bookCount = count;
+  //       return root.bookCount;
+  //     }
+  //   },
+  // },
 };
 
 const server = new ApolloServer({
