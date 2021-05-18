@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { Button, Divider, Header, Container } from "semantic-ui-react";
 
 import { apiBaseUrl } from "./constants";
-import { useStateValue } from "./state";
+import { setPatients, useStateValue } from "./state";
 import patientService from "./services/patients";
 
 import PatientListPage from "./PatientListPage";
@@ -18,7 +18,7 @@ const App = () => {
     const fetchPatientList = async () => {
       try {
         const patientListFromApi = await patientService.getAll();
-        dispatch({ type: "SET_PATIENT_LIST", payload: patientListFromApi });
+        dispatch(setPatients(patientListFromApi));
       } catch (e) {
         console.error(e);
       }

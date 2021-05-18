@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router";
 
 import { Container, Header, Icon } from "semantic-ui-react";
-import { useStateValue } from "../state";
+import { updatePatient, useStateValue } from "../state";
 import patientService from "../services/patients";
 
 const PatientInfoPage = () => {
@@ -15,7 +15,7 @@ const PatientInfoPage = () => {
     try {
       const fetchedPatient = await patientService.getOne(patientId);
 
-      void dispatch({ type: "UPDATE_PATIENT", payload: fetchedPatient });
+      void dispatch(updatePatient(fetchedPatient));
     } catch (e) {
       console.error(e);
     }

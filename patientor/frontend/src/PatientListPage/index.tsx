@@ -6,7 +6,7 @@ import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
 import AddPatientModal from "../AddPatientModal";
 import { Patient } from "../types";
 import HealthRatingBar from "../components/HealthRatingBar";
-import { useStateValue } from "../state";
+import { addPatient, useStateValue } from "../state";
 import patientService from "../services/patients";
 
 const PatientListPage = () => {
@@ -26,7 +26,7 @@ const PatientListPage = () => {
     try {
       const newPatient = await patientService.createNew(values);
 
-      dispatch({ type: "ADD_PATIENT", payload: newPatient });
+      dispatch(addPatient(newPatient));
       closeModal();
     } catch (e) {
       console.error(e.response?.data || "Unknown Error");
