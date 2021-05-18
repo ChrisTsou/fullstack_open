@@ -1,0 +1,50 @@
+import React from "react";
+import { useParams } from "react-router";
+
+import { Container, Header, Icon } from "semantic-ui-react";
+import { useStateValue } from "../state";
+import patientService from "../services/patients";
+
+const PatientInfoPage = () => {
+  const { id: patientId } = useParams<{ id: string }>();
+  const [{ patients }, dispatch] = useStateValue();
+
+  const patient = patients[patientId];
+
+  const fetchPatient = async () => {
+    try {
+      const fetchedPatient = await patientService.getOne(patientId);
+
+      void dispatch({ type: "UPDATE_PATIENT", payload: fetchedPatient });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  if (!patient?.entries || !patient?.ssn) {
+    void fetchPatient();
+    return <p>loading...</p>;
+  }
+
+  const genderIcon = () => {
+    if (patient.gender === "male") {
+      return <Icon name="mars" />;
+    } else if (patient.gender === "female") {
+      return <Icon name="venus" />;
+    } else {
+      return `: ${patient.gender}`;
+    }
+  };
+
+  return (
+    <Container>
+      <Header as="h2">
+        {patient.name} {genderIcon()}
+      </Header>
+      <p>ssn: {patient.ssn}</p>
+      <p>occupation: {patient.occupation}</p>
+    </Container>
+  );
+};
+
+export default PatientInfoPage;
