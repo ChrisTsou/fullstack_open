@@ -1,4 +1,4 @@
-import { Gender, NewPatient } from "./types";
+import { Entry, Gender, NewPatient } from "./types";
 
 type Fields = {
   name: unknown;
@@ -6,6 +6,7 @@ type Fields = {
   ssn: unknown;
   gender: unknown;
   occupation: unknown;
+  entries: unknown;
 };
 
 const toNewPatient = ({
@@ -14,6 +15,7 @@ const toNewPatient = ({
   ssn,
   gender,
   occupation,
+  entries,
 }: Fields): NewPatient => {
   const isString = (text: unknown): text is string => {
     return typeof text === "string" || text instanceof String;
@@ -68,13 +70,34 @@ const toNewPatient = ({
     return gender;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isEntry = (entry: any): entry is Entry => {
+    return (
+      entry.type === "HealthCheck" ||
+      entry.type === "OccupationalHealthcare" ||
+      entry.type === "Hospital"
+    );
+  };
+
+  const parseEntries = (entries: unknown): Entry[] => {
+    if (typeof entries === "undefined") {
+      return [];
+    }
+
+    if (!Array.isArray(entries) || !entries.every(isEntry)) {
+      throw new Error("Incorrect patient entries found");
+    }
+
+    return entries;
+  };
+
   const newPatient: NewPatient = {
     name: parseName(name),
     dateOfBirth: parseDateOfBirth(dateOfBirth),
     ssn: parseSsn(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
-    entries: [],
+    entries: parseEntries(entries),
   };
 
   return newPatient;
