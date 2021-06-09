@@ -1,14 +1,32 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router";
 
-import { Container, Header, Icon } from "semantic-ui-react";
-import { updatePatient, useStateValue } from "../state";
+import { Button, Container, Header, Icon } from "semantic-ui-react";
+import { addEntry, updatePatient, useStateValue } from "../state";
 import patientService from "../services/patients";
 import Entry from "./Entry";
+import AddEntryModal from "./AddEntryModal";
+import { EntryFormValues } from "./AddEntryModal/AddEntryForm";
 
 const PatientInfoPage = () => {
   const { id: patientId } = useParams<{ id: string }>();
   const [{ patients }, dispatch] = useStateValue();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      const newEntry = await patientService.addEntry(patientId, values);
+
+      dispatch(addEntry(patientId, newEntry));
+      closeModal();
+    } catch (e) {
+      console.error(e.response?.data || "Unknown Error");
+      // setError(e.response?.data?.error || "Unknown error");
+    }
+  };
 
   const patient = patients[patientId];
 
@@ -50,6 +68,12 @@ const PatientInfoPage = () => {
         occupation: {patient.occupation}
       </p>
       <Header as="h3">entries</Header>
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={submitNewEntry}
+      />
+      <Button onClick={openModal}>Add New Entry</Button>
       {patient.entries.map((entry) => (
         <Entry key={entry.id} entry={entry} />
       ))}

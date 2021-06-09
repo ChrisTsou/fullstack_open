@@ -1,5 +1,5 @@
 import patientData from "../../data/patients";
-import { NewPatient, PublicPatient, Patient, Entry } from "../types";
+import { NewPatient, PublicPatient, Patient, NewEntry } from "../types";
 import { v1 as uuid } from "uuid";
 import { toNewPatient } from "../utils";
 
@@ -39,8 +39,13 @@ const addPatient = (patient: NewPatient) => {
   return newPatient;
 };
 
-const addPatientEntry = (id: string, entry: Entry) => {
+const addPatientEntry = (id: string, entry: NewEntry) => {
   const oldPatient = patients.find((p) => p.id === id);
+
+  const newEntry = {
+    id: uuid(),
+    ...entry,
+  };
 
   if (!oldPatient) {
     throw new Error("patient not found");
@@ -50,12 +55,12 @@ const addPatientEntry = (id: string, entry: Entry) => {
     patient.id === id
       ? {
           ...patient,
-          entries: patient.entries.push(entry),
+          entries: patient.entries.push(newEntry),
         }
       : patient
   );
 
-  return entry;
+  return newEntry;
 };
 
 export default {

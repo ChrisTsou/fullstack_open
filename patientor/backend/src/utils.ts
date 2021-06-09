@@ -4,11 +4,12 @@ import {
   Gender,
   HealthCheckRating,
   HospitalEntry,
+  NewEntry,
   NewPatient,
   OccupationalHealthEntry,
 } from "./types";
 
-type Fields = {
+type toPatientFields = {
   name: unknown;
   dateOfBirth: unknown;
   ssn: unknown;
@@ -38,9 +39,8 @@ const isDate = (date: string): boolean => {
   return Boolean(Date.parse(date));
 };
 
-export const toEntry = ({
+export const toNewEntry = ({
   type,
-  id,
   description,
   date,
   specialist,
@@ -49,15 +49,7 @@ export const toEntry = ({
   employerName,
   sickLeave,
   discharge,
-}: ToEntryFields): Entry => {
-  const parseId = (id: unknown): string => {
-    if (!id || !isString(id)) {
-      throw new Error("incorrect or missing id");
-    }
-
-    return id;
-  };
-
+}: ToEntryFields): NewEntry => {
   const parseDescription = (description: unknown): string => {
     if (!description || !isString(description)) {
       throw new Error("incorrect or missing description");
@@ -155,7 +147,6 @@ export const toEntry = ({
   };
 
   const baseEntry = {
-    id: parseId(id),
     description: parseDescription(description),
     date: parseDate(date),
     specialist: parseSpecialist(specialist),
@@ -198,7 +189,7 @@ export const toNewPatient = ({
   gender,
   occupation,
   entries,
-}: Fields): NewPatient => {
+}: toPatientFields): NewPatient => {
   const parseName = (name: unknown): string => {
     if (!name || !isString(name)) {
       throw new Error("Incorrect or missing name");
@@ -246,7 +237,7 @@ export const toNewPatient = ({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const isEntry = (entry: any): entry is Entry => {
-    return Boolean(toEntry(entry));
+    return Boolean(toNewEntry(entry));
   };
 
   const parseEntries = (entries: unknown): Entry[] => {
