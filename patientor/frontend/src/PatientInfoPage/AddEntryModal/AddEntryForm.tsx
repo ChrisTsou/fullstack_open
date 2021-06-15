@@ -1,33 +1,53 @@
 import React from "react";
 import { Field, Form, Formik } from "formik";
-import { Button, Grid } from "semantic-ui-react";
+import { Button, Container, Grid, Header } from "semantic-ui-react";
 import {
   DiagnosisSelection,
   NumberField,
   TextField,
 } from "../../AddPatientModal/FormField";
 import { useStateValue } from "../../state";
-import { HealthCheckEntry, HealthCheckRating } from "../../types";
+import {
+  Entry,
+  HealthCheckEntry,
+  HospitalEntry,
+  OccupationalHealthEntry,
+} from "../../types";
 
-export type EntryFormValues = Omit<HealthCheckEntry, "id">;
+export type EntryFormValues = Omit<HealthCheckEntry, "id" | "type"> &
+  Omit<OccupationalHealthEntry, "id" | "type"> &
+  Omit<HospitalEntry, "id" | "type"> & {
+    type: Entry["type"];
+  };
 
 interface Props {
   onSubmit: (values: EntryFormValues) => void;
   onCancel: () => void;
+  formType: Entry["type"];
 }
 
-const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
+const AddEntryForm = ({ onSubmit, onCancel, formType }: Props) => {
   const [{ diagnoses }] = useStateValue();
 
   return (
     <Formik
+      enableReinitialize
       initialValues={{
-        type: "HealthCheck",
+        type: formType,
         description: "",
         date: "",
         specialist: "",
-        healthCheckRating: HealthCheckRating.Healthy,
         diagnosisCodes: [],
+        healthCheckRating: 0,
+        employerName: "",
+        sickLeave: {
+          startDate: "",
+          endDate: "",
+        },
+        discharge: {
+          date: "",
+          criteria: "",
+        },
       }}
       onSubmit={onSubmit}
       validate={(values) => {
@@ -42,9 +62,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
-        if (!values.healthCheckRating) {
-          errors.healthCheckRating = requiredError;
-        }
+
         return errors;
       }}
     >
@@ -69,13 +87,56 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
               name="specialist"
               component={TextField}
             />
-            <Field
-              label="HealthCheckRating"
-              name="healthCheckRating"
-              component={NumberField}
-              min={0}
-              max={3}
-            />
+            {formType === "HealthCheck" && (
+              <Field
+                label="HealthCheckRating"
+                name="healthCheckRating"
+                component={NumberField}
+                min={0}
+                max={3}
+              />
+            )}
+            {formType === "OccupationalHealthcare" && (
+              <>
+                <Field
+                  label="EmployerName"
+                  name="employerName"
+                  component={TextField}
+                  placeholder="Employer Name"
+                />
+                <Header as="h5" style={{ margin: "0" }}>
+                  Sick Leave
+                </Header>
+                <Container style={{ display: "flex" }}>
+                  <Field
+                    name="sickLeave.startDate"
+                    placeholder="YYYY-MM-DD"
+                    component={TextField}
+                  />
+                  <Field
+                    name="sickLeave.endDate"
+                    placeholder="YYYY-MM-DD"
+                    component={TextField}
+                  />
+                </Container>
+              </>
+            )}
+            {formType === "Hospital" && (
+              <>
+                <Field
+                  label="Discharge Date"
+                  name="discharge.date"
+                  placeholder="YYYY-MM-DD"
+                  component={TextField}
+                />
+                <Field
+                  label="Discharge Criteria"
+                  name="discharge.criteria"
+                  placeholder="Criteria"
+                  component={TextField}
+                />
+              </>
+            )}
             <DiagnosisSelection
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}

@@ -85,7 +85,7 @@ const Entry = (props: EntryProps) => {
           <BaseRender />
           <p>
             Discharge: {entry.discharge.date} <br />
-            {entry.discharge.criteria}
+            Criteria: {entry.discharge.criteria}
           </p>
         </Segment>
       );
