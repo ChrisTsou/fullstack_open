@@ -6,11 +6,13 @@ import theme from "../theme";
 
 const styles = StyleSheet.create({
   container: {
+    margin: 0,
+    padding: 0,
     paddingTop: Constants.statusBarHeight,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: theme.colors.textPrimary,
+    backgroundColor: theme.colors.backgroundSecondary,
   },
   // ...
 });

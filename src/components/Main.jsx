@@ -17,7 +17,6 @@ const Main = () => {
   return (
     <View style={styles.container}>
       <AppBar />
-      <View style={styles.separator} />
       <RepositoryList />
     </View>
   );
