@@ -11,19 +11,22 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     backgroundColor: theme.colors.backgroundSecondary,
   },
   // ...
 });
 
-const tabs = ["Repositories"];
+const tabs = [
+  { name: "Repositories", path: "/" },
+  { name: "Sign In", path: "/signin" },
+];
 
 const AppBar = () => {
   return (
     <View style={styles.container}>
-      {tabs.map((tabName) => (
-        <AppBarTab key={tabName} text={tabName} />
+      {tabs.map(({ name, path }) => (
+        <AppBarTab key={name} text={name} path={path} />
       ))}
     </View>
   );
