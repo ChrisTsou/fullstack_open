@@ -1,6 +1,7 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import Constants from "expo-constants";
+
 import AppBarTab from "./AppBarTab";
 import theme from "../theme";
 
@@ -25,9 +26,11 @@ const tabs = [
 const AppBar = () => {
   return (
     <View style={styles.container}>
-      {tabs.map(({ name, path }) => (
-        <AppBarTab key={name} text={name} path={path} />
-      ))}
+      <ScrollView horizontal>
+        {tabs.map(({ name, path }) => (
+          <AppBarTab key={name} text={name} path={path} />
+        ))}
+      </ScrollView>
     </View>
   );
 };
