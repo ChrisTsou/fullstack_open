@@ -7,10 +7,13 @@ import Text from "./Text";
 import FormikTextInput from "./FormikTextInput";
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+  },
   textInput: {
+    marginBottom: 10,
     padding: 5,
     paddingLeft: 10,
-    margin: 10,
     borderWidth: 2,
     borderColor: "lightgrey",
     borderRadius: 5,
@@ -19,7 +22,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    margin: 10,
     padding: 10,
     borderRadius: 5,
     backgroundColor: theme.colors.primary,
@@ -28,7 +30,7 @@ const styles = StyleSheet.create({
 
 const SignInForm = (props) => {
   return (
-    <View>
+    <View style={styles.container}>
       <FormikTextInput
         style={styles.textInput}
         name="username"
