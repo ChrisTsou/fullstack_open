@@ -1,7 +1,7 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "REACT_NATIVE_PACKAGER_HOSTNAME=192.168.1.2 expo start",
+    "start": "REACT_NATIVE_PACKAGER_HOSTNAME=192.168.1.5 expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -9,9 +9,11 @@
     "lint": "eslint ./src/**/*.{js,jsx} App.js --no-error-on-unmatched-pattern"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.20",
     "expo": "~40.0.0",
     "expo-status-bar": "~1.0.3",
     "formik": "^2.2.9",
+    "graphql": "^15.5.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
