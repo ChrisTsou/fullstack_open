@@ -1,18 +1,11 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import { Link } from "react-router-native";
 
 import Text from "./Text";
 
-const styles = StyleSheet.create({
-  tab: {
-    padding: 15,
-  },
-});
-
-const AppBarTab = ({ text, path }) => {
+const AppBarTab = ({ text, path, style }) => {
   return (
-    <Link style={styles.tab} to={path} replace>
+    <Link style={style} to={path} replace>
       <Text fontSize="subheading" color="primary">
         {text}
       </Text>
