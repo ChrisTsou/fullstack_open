@@ -32,17 +32,20 @@ const SignInForm = (props) => {
   return (
     <View style={styles.container}>
       <FormikTextInput
+        testID="usernameField"
         style={styles.textInput}
         name="username"
         placeholder="Username"
       />
       <FormikTextInput
+        testID="passwordField"
         style={styles.textInput}
         name="password"
         placeholder="Password"
         secureTextEntry
       />
       <Pressable
+        testID="submitButton"
         style={[styles.container, styles.signInButton]}
         onPress={props.onSubmit}
         android_ripple={{ color: theme.colors.backgroundPrimary }}

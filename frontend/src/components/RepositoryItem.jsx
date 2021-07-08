@@ -51,7 +51,7 @@ const RepositoryListItem = (props) => {
     num >= 1000 ? `${(num / 1000).toFixed(1)}k` : num;
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="repositoryContainer">
       <View style={[styles.container, styles.topContainer]}>
         <View style={[styles.container, styles.imageContainer]}>
           <Image
@@ -60,7 +60,12 @@ const RepositoryListItem = (props) => {
           />
         </View>
         <View style={[styles.container, styles.infoContainer]}>
-          <Text style={styles.text} fontWeight="bold" fontSize="subheading">
+          <Text
+            testID="fullName"
+            style={styles.text}
+            fontWeight="bold"
+            fontSize="subheading"
+          >
             {item.fullName}
           </Text>
           <Text style={styles.text} color="textSecondary">
