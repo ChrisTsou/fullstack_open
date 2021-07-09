@@ -1,24 +1,12 @@
-import React from "react";
-import { StyleSheet, Pressable } from "react-native";
-import { useParams } from "react-router-native";
 import { useQuery } from "@apollo/client";
+import React from "react";
+import { FlatList } from "react-native";
+import { useParams } from "react-router-native";
 import { GET_REPOSITORY } from "../graphql/queries";
-import RepositoryListItem from "./RepositoryItem";
-import * as Linking from "expo-linking";
 
-import Text from "./Text";
-import theme from "../theme";
-
-const styles = StyleSheet.create({
-  button: {
-    display: "flex",
-    alignItems: "center",
-    margin: 10,
-    padding: 20,
-    borderRadius: 5,
-    backgroundColor: theme.colors.primary,
-  },
-});
+import ItemSeparator from "./ItemSeparator";
+import RepositorySingleHeader from "./RepositorySingleHeader";
+import ReviewItem from "./ReviewItem";
 
 const RepositorySingle = () => {
   const { id } = useParams();
@@ -28,20 +16,18 @@ const RepositorySingle = () => {
     },
   });
 
-  const onPress = () => {
-    Linking.openURL(data?.repository.url);
-  };
+  const repository = data?.repository;
+  const reviews = repository?.reviews.edges.map((edge) => edge.node);
 
-  return data ? (
-    <>
-      <RepositoryListItem item={data.repository} />
-      <Pressable style={styles.button} onPress={onPress}>
-        <Text fontWeight="bold" color="textTertiary">
-          Open in Github
-        </Text>
-      </Pressable>
-    </>
-  ) : null;
+  return (
+    <FlatList
+      ListHeaderComponent={<RepositorySingleHeader repository={repository} />}
+      data={reviews}
+      keyExtractor={({ id }) => id}
+      ItemSeparatorComponent={ItemSeparator}
+      renderItem={({ item }) => <ReviewItem review={item} />}
+    />
+  );
 };
 
 export default RepositorySingle;

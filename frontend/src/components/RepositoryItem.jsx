@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const RepositoryListItem = (props) => {
+const RepositoryItem = (props) => {
   const item = props.item;
 
   const truncateNumber = (num) =>
@@ -106,4 +106,4 @@ const RepositoryListItem = (props) => {
   );
 };
 
-export default RepositoryListItem;
+export default RepositoryItem;

@@ -1,22 +1,17 @@
 import React from "react";
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import { useHistory } from "react-router-native";
-import theme from "../theme";
-import RepositoryListItem from "./RepositoryItem";
+
+import ItemSeparator from "./ItemSeparator";
+import RepositoryItem from "./RepositoryItem";
 
 const styles = StyleSheet.create({
   list: {
     margin: 0,
     padding: 0,
   },
-  separator: {
-    height: 10,
-    backgroundColor: theme.colors.textSecondary,
-  },
 });
-
-const ItemSeparator = () => <View style={styles.separator} />;
 
 const RepositoryListContainer = ({ repositories }) => {
   const history = useHistory();
@@ -34,7 +29,7 @@ const RepositoryListContainer = ({ repositories }) => {
       ItemSeparatorComponent={ItemSeparator}
       renderItem={({ item }) => (
         <Pressable onPress={onPress(item.id)}>
-          <RepositoryListItem item={item} />
+          <RepositoryItem item={item} />
         </Pressable>
       )}
     />
