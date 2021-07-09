@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   infoContainer: {
-    justifyContent: "space-between",
+    flex: 1,
     alignItems: "flex-start",
   },
   imageContainer: {
