@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
 
-import SignInFormikContext from "../../components/SignInFormikContext";
+import SignInFormikContext from "../../components/SignIn/SignInFormikContext";
 
 describe("SignIn", () => {
   describe("SignInContainer", () => {

@@ -1,6 +1,6 @@
 import React from "react";
 
-import useSignIn from "../hooks/useSignIn";
+import useSignIn from "../../hooks/useSignIn";
 import SignInFormikContext from "./SignInFormikContext";
 
 const SignIn = () => {
@@ -10,7 +10,7 @@ const SignIn = () => {
     const { username, password } = values;
 
     try {
-      const { data } = await signIn({ username, password });
+      await signIn({ username, password });
     } catch (e) {
       console.log(e);
     }

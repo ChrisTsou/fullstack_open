@@ -1,7 +1,7 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 import WriteReviewFormik from "./WriteReviewFormik";
-import { CREATE_REVIEW } from "../graphql/mutations";
+import { CREATE_REVIEW } from "../../graphql/mutations";
 import { useHistory } from "react-router-native";
 
 const WriteReview = () => {

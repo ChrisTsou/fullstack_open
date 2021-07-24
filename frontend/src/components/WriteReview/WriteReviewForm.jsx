@@ -1,9 +1,9 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import theme from "../theme";
+import theme from "../../theme";
 
-import FormikTextInput from "./FormikTextInput";
-import FormSubmitButton from "./FormSubmitButton";
+import FormikTextInput from "../FormikTextInput";
+import FormSubmitButton from "../FormSubmitButton";
 
 const styles = StyleSheet.create({
   container: {
