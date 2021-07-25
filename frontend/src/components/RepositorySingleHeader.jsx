@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, Pressable } from "react-native";
 import theme from "../theme";
-import RepositoryItem from "./RepositoryItem";
 import * as Linking from "expo-linking";
 
+import RepositoryItem from "./RepositoryItem";
 import Text from "./Text";
 import ItemSeparator from "./ItemSeparator";
 

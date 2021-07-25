@@ -1,10 +1,11 @@
 import React from "react";
 import { FlatList, StyleSheet } from "react-native";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { Pressable } from "react-native";
 import { useHistory } from "react-router-native";
 
-import ItemSeparator from "./ItemSeparator";
-import RepositoryItem from "./RepositoryItem";
+import ItemSeparator from "../ItemSeparator";
+import RepositoryItem from "../RepositoryItem";
+import RepositoryListHeader from "./RepositoryListHeader";
 
 const styles = StyleSheet.create({
   list: {
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const RepositoryListContainer = ({ repositories }) => {
+const RepositoryListContainer = ({ repositories, sortState }) => {
   const history = useHistory();
 
   const repositoryNodes = repositories
@@ -24,6 +25,7 @@ const RepositoryListContainer = ({ repositories }) => {
 
   return (
     <FlatList
+      ListHeaderComponent={<RepositoryListHeader sortState={sortState} />}
       style={styles.list}
       data={repositoryNodes}
       ItemSeparatorComponent={ItemSeparator}
