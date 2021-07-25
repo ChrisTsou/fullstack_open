@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const RepositoryListContainer = ({ repositories, sortState }) => {
+const RepositoryListContainer = ({ repositories, sortState, filterState }) => {
   const history = useHistory();
 
   const repositoryNodes = repositories
@@ -25,7 +25,9 @@ const RepositoryListContainer = ({ repositories, sortState }) => {
 
   return (
     <FlatList
-      ListHeaderComponent={<RepositoryListHeader sortState={sortState} />}
+      ListHeaderComponent={
+        <RepositoryListHeader sortState={sortState} filterState={filterState} />
+      }
       style={styles.list}
       data={repositoryNodes}
       ItemSeparatorComponent={ItemSeparator}

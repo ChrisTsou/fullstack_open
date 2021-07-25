@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { GET_REPOSITORIES } from "../graphql/queries";
 
-const useRepositories = (sorting) => {
+const useRepositories = (sorting, searchKeyword) => {
   const getSortValues = () => {
     switch (sorting) {
       case "latest":
@@ -19,11 +19,13 @@ const useRepositories = (sorting) => {
           orderBy: "RATING_AVERAGE",
           orderDirection: "ASC",
         };
+      default:
+        throw new Error("Unknown sorting type");
     }
   };
 
   const { loading, data, refetch } = useQuery(GET_REPOSITORIES, {
-    variables: { ...getSortValues() },
+    variables: { ...getSortValues(), searchKeyword },
     fetchPolicy: "cache-and-network",
   });
 
