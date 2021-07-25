@@ -1,27 +1,11 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import theme from "../../theme";
 
 import FormikTextInput from "../FormikTextInput";
-import FormSubmitButton from "../FormSubmitButton";
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  signInButton: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: theme.colors.primary,
-  },
-});
+import FormTemplate from "../FormTemplate";
 
 const SignInForm = ({ onSubmit }) => {
   return (
-    <View style={styles.container}>
+    <FormTemplate submitText={"Sign In"} onSubmit={onSubmit}>
       <FormikTextInput
         testID="usernameField"
         name="username"
@@ -33,8 +17,7 @@ const SignInForm = ({ onSubmit }) => {
         placeholder="Password"
         secureTextEntry
       />
-      <FormSubmitButton text="Sign In" onSubmit={onSubmit} />
-    </View>
+    </FormTemplate>
   );
 };
 
