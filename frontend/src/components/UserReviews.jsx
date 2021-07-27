@@ -48,7 +48,6 @@ const UserReviews = () => {
   const deleteReviewFunction = async (id) => {
     try {
       const response = await deleteReview({ variables: { id } });
-      console.log(response);
       refetch();
     } catch (e) {
       console.error(e);
