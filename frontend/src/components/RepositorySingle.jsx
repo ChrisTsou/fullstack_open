@@ -10,15 +10,35 @@ import ReviewItem from "./ReviewItem";
 
 const RepositorySingle = () => {
   const { id } = useParams();
-  const { data } = useQuery(GET_REPOSITORY, {
+
+  const variables = {
+    first: 5,
+    id,
+  };
+
+  const { loading, data, fetchMore } = useQuery(GET_REPOSITORY, {
     fetchPolicy: "cache-and-network",
-    variables: {
-      id,
-    },
+    variables,
   });
 
   const repository = data?.repository;
   const reviews = repository?.reviews.edges.map((edge) => edge.node);
+
+  const handleFetchMore = () => {
+    const canFetchMore =
+      !loading && data?.repository.reviews.pageInfo.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+
+    fetchMore({
+      variables: {
+        after: data.repository.reviews.pageInfo.endCursor,
+        ...variables,
+      },
+    });
+  };
 
   return (
     <FlatList
@@ -27,6 +47,8 @@ const RepositorySingle = () => {
       keyExtractor={({ id }) => id}
       ItemSeparatorComponent={ItemSeparator}
       renderItem={({ item }) => <ReviewItem review={item} />}
+      onEndReached={handleFetchMore}
+      onEndReachedThreshold={0.5}
     />
   );
 };

@@ -11,6 +11,7 @@ const REPOSITORY_BASIC_INFO = gql`
     forksCount
     reviewCount
     ratingAverage
+    createdAt
   }
 `;
 
@@ -19,16 +20,27 @@ export const GET_REPOSITORIES = gql`
     $orderBy: AllRepositoriesOrderBy!
     $orderDirection: OrderDirection!
     $searchKeyword: String
+    $first: Int
+    $after: String
   ) {
     repositories(
       orderBy: $orderBy
       orderDirection: $orderDirection
       searchKeyword: $searchKeyword
+      first: $first
+      after: $after
     ) {
+      totalCount
       edges {
         node {
           ...RepositoryBasicInfo
         }
+        cursor
+      }
+      pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
       }
     }
   }
@@ -36,11 +48,12 @@ export const GET_REPOSITORIES = gql`
 `;
 
 export const GET_REPOSITORY = gql`
-  query GetRepository($id: ID!) {
+  query GetRepository($id: ID!, $first: Int, $after: String) {
     repository(id: $id) {
       ...RepositoryBasicInfo
       url
-      reviews {
+      reviews(first: $first, after: $after) {
+        totalCount
         edges {
           node {
             id
@@ -52,6 +65,12 @@ export const GET_REPOSITORY = gql`
               username
             }
           }
+          cursor
+        }
+        pageInfo {
+          endCursor
+          startCursor
+          hasNextPage
         }
       }
     }

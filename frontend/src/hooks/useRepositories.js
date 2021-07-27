@@ -1,38 +1,32 @@
 import { useQuery } from "@apollo/client";
 import { GET_REPOSITORIES } from "../graphql/queries";
 
-const useRepositories = (sorting, searchKeyword) => {
-  const getSortValues = () => {
-    switch (sorting) {
-      case "latest":
-        return {
-          orderBy: "CREATED_AT",
-          orderDirection: "DESC",
-        };
-      case "highestRated":
-        return {
-          orderBy: "RATING_AVERAGE",
-          orderDirection: "DESC",
-        };
-      case "lowestRated":
-        return {
-          orderBy: "RATING_AVERAGE",
-          orderDirection: "ASC",
-        };
-      default:
-        throw new Error("Unknown sorting type");
-    }
-  };
-
-  const { loading, data, refetch } = useQuery(GET_REPOSITORIES, {
-    variables: { ...getSortValues(), searchKeyword },
+const useRepositories = (variables) => {
+  const { loading, data, fetchMore, ...result } = useQuery(GET_REPOSITORIES, {
+    variables,
     fetchPolicy: "cache-and-network",
   });
 
+  const handleFetchMore = () => {
+    const canFetchMore = !loading && data?.repositories.pageInfo.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+
+    fetchMore({
+      variables: {
+        after: data.repositories.pageInfo.endCursor,
+        ...variables,
+      },
+    });
+  };
+
   return {
-    repositories: data ? data.repositories : undefined,
+    repositories: data?.repositories,
+    fetchMore: handleFetchMore,
     loading,
-    refetch,
+    ...result,
   };
 };
 

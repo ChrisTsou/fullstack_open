@@ -34,7 +34,9 @@ const RepositoryListHeader = ({ sortState, filterState }) => {
       <Picker
         style={styles.picker}
         selectedValue={sortState.sorting}
-        onValueChange={(itemValue) => sortState.setSorting(itemValue)}
+        onValueChange={(itemValue) =>
+          sortState.setSorting(getSortValues(itemValue))
+        }
       >
         <Picker.Item label="Latest repositories" value="latest" />
         <Picker.Item label="Highest rated repositories" value="highestRated" />
