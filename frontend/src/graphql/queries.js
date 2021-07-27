@@ -15,6 +15,19 @@ const REPOSITORY_BASIC_INFO = gql`
   }
 `;
 
+const REVIEW_FIELDS = gql`
+  fragment ReviewFields on Review {
+    id
+    text
+    rating
+    createdAt
+    user {
+      id
+      username
+    }
+  }
+`;
+
 export const GET_REPOSITORIES = gql`
   query (
     $orderBy: AllRepositoriesOrderBy!
@@ -56,14 +69,7 @@ export const GET_REPOSITORY = gql`
         totalCount
         edges {
           node {
-            id
-            text
-            rating
-            createdAt
-            user {
-              id
-              username
-            }
+            ...ReviewFields
           }
           cursor
         }
@@ -76,13 +82,28 @@ export const GET_REPOSITORY = gql`
     }
   }
   ${REPOSITORY_BASIC_INFO}
+  ${REVIEW_FIELDS}
 `;
 
 export const GET_AUTHORIZED_USER = gql`
-  query {
+  query getAuthorizedUser($includeReviews: Boolean = false) {
     authorizedUser {
       id
       username
+      reviews @include(if: $includeReviews) {
+        edges {
+          node {
+            ...ReviewFields
+          }
+          cursor
+        }
+        pageInfo {
+          endCursor
+          startCursor
+          hasNextPage
+        }
+      }
     }
   }
+  ${REVIEW_FIELDS}
 `;
