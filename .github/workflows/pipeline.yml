@@ -1,0 +1,66 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+jobs:
+    simple_deployment_pipeline:
+      runs-on: ubuntu-18.04
+      env:
+        SKIP: ${{ contains(github.event.head_commit.message, '#skip') }}
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v1
+          with:
+            node-version: '12.x'
+        - name: npm install
+          run: npm install
+        - name: lint
+          run: npm run eslint
+        - name: build
+          run: npm run build
+        - uses: 8398a7/action-slack@v3
+          with:
+            status: ${{ job.status }}
+            fields: all
+          env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+          if: ${{ failure() }}
+        - name: test
+          run: npm run test
+        - name: e2e tests
+          uses: cypress-io/github-action@v2
+          with:
+            command: npm run test:e2e
+            start: npm run start-prod
+            wait-on: http://localhost:5000
+        - name: deploy
+          if: ${{ github.event_name == 'push' && !env.SKIP}}
+          uses: AkhileshNS/heroku-deploy@v3.12.12
+          with:
+            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+            heroku_app_name: "fso-christsu-pokedex"
+            heroku_email: "christau90s@gmail.com"
+            healthcheck: "https://fso-christsu-pokedex.herokuapp.com/health"
+            checkstring: "ok"
+            rollbackonhealthcheckfailed: true
+        - uses: 8398a7/action-slack@v3
+          with:
+            status: ${{ job.status }}
+            text: 'new version deployed!'
+          env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+          if: ${{ success() }}
+        - uses: actions/checkout@v2
+        - name: Bump version and push tag
+          if: ${{ github.event_name == 'push' && !env.SKIP}}
+          uses: anothrNick/github-tag-action@1.33.0
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            DEFAULT_BUMP: patch
+
